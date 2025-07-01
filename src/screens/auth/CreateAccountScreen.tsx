@@ -4,21 +4,23 @@ import {
   Text, 
   TextInput, 
   TouchableOpacity, 
-  ImageBackground,
   Platform,
+  ImageBackground,
 } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { styles } from '../../styles/CreateAccountScreen.styles';
+import { styles } from '../../styles/auth/CreateAccountScreen.styles';
 import Screen from '../../components/Screen';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigation/AppNavigator';
+import { useOnboarding } from '../onboarding/OnboardingContext';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'CreateAccount'>;
 
 const CreateAccountScreen = () => {
   const navigation = useNavigation<NavigationProp>();
+  const { setAnswers } = useOnboarding();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -51,10 +53,16 @@ const CreateAccountScreen = () => {
     }
   };
 
+  const handleSignUp = () => {
+    setAnswers(prev => ({ ...prev, ...formData }));
+    console.log('Signup data:', formData);
+    navigation.navigate('Onboarding');
+  };
+
   return (
     <Screen style={styles.screen}>
       <ImageBackground 
-        source={require('../../assets/auth/create-acc-page/create-acc.png')} 
+        source={require('../../assets/auth/create-acc-page/create-acc.jpg')} 
         style={styles.background}
         resizeMode="cover"
       />
@@ -119,7 +127,7 @@ const CreateAccountScreen = () => {
         </View>
 
         <View style={[styles.buttonsContainer, showDatePicker && styles.buttonsContainerShifted]}>
-          <TouchableOpacity style={styles.signUpButton}>
+          <TouchableOpacity style={styles.signUpButton} onPress={handleSignUp}>
             <Text style={styles.signUpButtonText}>Sign Up</Text>
           </TouchableOpacity>
 
@@ -130,7 +138,9 @@ const CreateAccountScreen = () => {
 
         <View style={styles.footerContainer}>
           <Text style={styles.termsText}>
-            By creating or logging into an account you are agreeing{'\n'}to the Terms and Conditions and Privacy Statement
+            By creating or logging into an account you are agreeing{' '}
+            <Text style={{ fontWeight: 'bold' }}>to the Terms and Conditions</Text> and{' '}
+            <Text style={{ fontWeight: 'bold' }}>Privacy Statement</Text>
           </Text>
 
           <View style={styles.dividerContainer}>

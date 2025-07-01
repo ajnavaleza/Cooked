@@ -1,16 +1,16 @@
 import { StyleSheet, Dimensions } from 'react-native';
-import { typography } from './typography';
+import { typography } from '../typography';
 
 const { width, height } = Dimensions.get('window');
 
 const colors = {
   primary: '#4A3531',
   white: '#FFFFFF',
-  overlay: 'rgba(103, 125, 183, 0.7)', // Blue overlay
-  inputBackground: 'rgba(255, 255, 255, 0.2)',
+  overlay: 'rgba(177, 170, 69, 0.9)', // #B1AA45 with 90% opacity
+  inputBackground: 'rgba(0, 0, 0, 0.1)',
   text: {
-    primary: '#FFFFFF',
-    secondary: 'rgba(255, 255, 255, 0.8)',
+    primary: '#000000',
+    secondary: 'rgba(0, 0, 0, 0.7)',
   }
 };
 
@@ -32,65 +32,109 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 24,
-    paddingTop: '20%',
+    paddingTop: '15%',
     zIndex: 1,
+    alignItems: 'center',
+    width: '100%',
+    maxWidth: 400,
+    alignSelf: 'center',
   },
   title: {
-    fontSize: 32,
+    fontSize: 40,
     color: colors.text.primary,
-    fontFamily: typography.fonts.semiBold,
+    fontFamily: typography.fonts.bold,
+    marginBottom: 8,
+    alignSelf: 'flex-start',
+  },
+  subtitle: {
+    fontSize: 24,
+    color: colors.text.primary,
+    fontFamily: typography.fonts.regular,
     marginBottom: 40,
+    alignSelf: 'flex-start',
   },
   inputContainer: {
     gap: 16,
     marginBottom: 24,
+    width: '100%',
   },
   input: {
-    height: 50,
+    height: 56,
     borderRadius: 8,
+    borderWidth: 1,
+    borderColor: colors.text.primary,
     paddingHorizontal: 16,
     backgroundColor: colors.inputBackground,
     color: colors.text.primary,
     fontSize: typography.sizes.md,
     fontFamily: typography.fonts.regular,
+    width: '100%',
   },
-  loginButton: {
-    backgroundColor: colors.white,
+  inputText: {
+    fontSize: typography.sizes.md,
+    fontFamily: typography.fonts.regular,
+  },
+  datePickerContainer: {
+    position: 'absolute',
+    top: '100%',
+    left: 0,
+    right: 0,
+    backgroundColor: 'rgba(177, 170, 69, 0.95)',
+    paddingVertical: 20,
+    zIndex: 1000,
+    width: '100%',
+  },
+  datePicker: {
+    height: 200,
+  },
+  buttonsContainer: {
+    marginTop: 24,
+    width: '100%',
+  },
+  buttonsContainerShifted: {
+    marginTop: 240,
+  },
+  signUpButton: {
+    backgroundColor: colors.text.primary,
     borderRadius: 8,
-    height: 50,
+    height: 56,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 16,
+    width: '100%',
   },
-  loginButtonText: {
-    color: colors.primary,
+  signUpButtonText: {
+    color: colors.white,
     fontSize: typography.sizes.lg,
     fontFamily: typography.fonts.semiBold,
+  },
+  backButton: {
+    alignItems: 'center',
+    marginTop: 8,
+    width: '100%',
+  },
+  backButtonText: {
+    color: colors.text.primary,
+    fontSize: typography.sizes.md,
+    fontFamily: typography.fonts.regular,
   },
   footerContainer: {
     marginTop: 'auto',
     paddingBottom: 40,
+    width: '100%',
   },
-  signUpContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 24,
-  },
-  footerText: {
+  termsText: {
     color: colors.text.secondary,
     fontSize: typography.sizes.sm,
     fontFamily: typography.fonts.regular,
-  },
-  linkText: {
-    color: colors.text.primary,
-    fontSize: typography.sizes.sm,
-    fontFamily: typography.fonts.semiBold,
-    textDecorationLine: 'underline',
+    textAlign: 'center',
+    marginBottom: 24,
   },
   dividerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 24,
+    marginBottom: 24,
+    width: '100%',
   },
   divider: {
     flex: 1,
@@ -107,21 +151,12 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     gap: 32,
+    width: '100%',
   },
   socialButton: {
     width: 40,
     height: 40,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  termsContainer: {
-    alignItems: 'center',
-    marginTop: 24,
-  },
-  termsText: {
-    color: colors.text.secondary,
-    fontSize: typography.sizes.sm,
-    fontFamily: typography.fonts.regular,
-    textAlign: 'center',
   },
 }); 

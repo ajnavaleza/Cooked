@@ -5,6 +5,7 @@ import LandingScreen from '../screens/auth/LandingScreen';
 import LoginScreen from '../screens/auth/LoginScreen';
 import CreateAccountScreen from '../screens/auth/CreateAccountScreen';
 import LoginScreenLoading from '../screens/auth/LoginScreenLoading';
+import OnboardingNavigator from '../screens/onboarding/OnboardingNavigator';
 import { Platform } from 'react-native';
 import type { NativeStackNavigationOptions } from '@react-navigation/native-stack';
 
@@ -13,6 +14,7 @@ export type RootStackParamList = {
   Login: undefined;
   CreateAccount: undefined;
   LoginLoading: undefined;
+  Onboarding: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -58,6 +60,10 @@ const AppNavigator = () => {
           name="LoginLoading" 
           component={LoginScreenLoading}
           options={fadeScreenOptions}
+        />
+        <Stack.Screen 
+          name="Onboarding" 
+          component={OnboardingNavigator}
         />
       </Stack.Navigator>
     </NavigationContainer>

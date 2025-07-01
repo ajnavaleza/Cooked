@@ -7,7 +7,7 @@ import {
   ImageBackground,
 } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
-import { styles } from '../../styles/LoginScreen.styles';
+import { styles } from '../../styles/auth/LoginScreen.styles';
 import Screen from '../../components/Screen';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -29,7 +29,7 @@ const LoginScreen = () => {
   const handleLogin = () => {
     // For testing: Navigate to loading screen if there's any input
     if (formData.username.length > 0 || formData.password.length > 0) {
-      navigation.replace('LoginLoading');
+      navigation.navigate('LoginLoading');
     }
   };
 
@@ -40,7 +40,7 @@ const LoginScreen = () => {
   return (
     <Screen style={styles.screen}>
       <ImageBackground 
-        source={require('../../assets/auth/login-page/login-bg.png')} 
+        source={require('../../assets/auth/login-page/login-page.jpg')} 
         style={styles.background}
         resizeMode="cover"
       />

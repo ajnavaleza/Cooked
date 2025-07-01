@@ -1,5 +1,5 @@
 import { StyleSheet, Dimensions } from 'react-native';
-import { typography } from './typography';
+import { typography } from '../typography';
 
 const { width, height } = Dimensions.get('window');
 
@@ -16,7 +16,7 @@ export const styles = StyleSheet.create({
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(243, 215, 125, 0.7)', // Yellow overlay with 70% opacity
+    backgroundColor: 'rgba(243, 215, 125, 0.6)', // Yellow overlay with 70% opacity
   },
   backButton: {
     position: 'absolute',

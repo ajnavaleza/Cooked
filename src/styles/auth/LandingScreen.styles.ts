@@ -1,5 +1,5 @@
 import { StyleSheet, Dimensions } from 'react-native';
-import { typography } from './typography';
+import { typography } from '../typography';
 
 const { width, height } = Dimensions.get('window');
 

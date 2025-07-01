@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
-import { View, Text, Image, TouchableOpacity, ImageBackground } from 'react-native';
-import { styles } from '../../styles/LoginScreenLoading.styles';
+import { View, Text, TouchableOpacity, ImageBackground } from 'react-native';
+import { styles } from '../../styles/auth/LoginScreenLoading.styles';
 import Screen from '../../components/Screen';
+import Logo from '../../components/Logo';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigation/AppNavigator';
@@ -22,13 +23,13 @@ const LoginScreenLoading = () => {
   }, [navigation]);
 
   const handleBack = () => {
-    navigation.replace('Login');
+    navigation.navigate('Login');
   };
 
   return (
     <Screen style={styles.screen}>
       <ImageBackground 
-        source={require('../../assets/auth/login-loading/login-load.png')} 
+        source={require('../../assets/auth/login-loading/login-loading.png')} 
         style={styles.background}
         resizeMode="cover"
       />
@@ -40,11 +41,7 @@ const LoginScreenLoading = () => {
         <Text style={styles.backButtonText}>← Back to Login</Text>
       </TouchableOpacity>
       <View style={styles.container}>
-        <Image 
-          source={require('../../assets/auth/landing-page/CookedLogo.png')}
-          style={styles.logo}
-          resizeMode="contain"
-        />
+        <Logo style={styles.logo} />
         <Text style={styles.welcomeText}>We are happy to</Text>
         <Text style={styles.welcomeText}>see you again</Text>
         <Text style={styles.subtitle}>Let's cook!</Text>
