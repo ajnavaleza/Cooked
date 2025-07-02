@@ -1,56 +1,119 @@
 # Cooked.
 
-Cooked. is a multi-platform resource, spanning a website, mobile app, and magazine, designed to help students and young adults cook fresh, healthy meals with ease. 
+A React Native mobile application for discovering and sharing recipes, tailored for students.
 
-Recognizing that many college students and recent graduates struggle with cooking due to limited time, experience, and access to simple, nutritious recipes, Cooked. delivers practical solutions across formats. By offering accessible recipes, cooking tips, and guidance wherever users are, Cooked. makes healthy cooking less intimidating and more achievable.
+## Project Structure
+
+```
+CookedApp/
+├── app.json
+├── App.tsx
+├── assets/
+│   ├── adaptive-icon.png
+│   ├── favicon.png
+│   ├── icon.png
+│   └── splash-icon.png
+├── cooked-backend/
+│   ├── models/
+│   │   └── User.js
+│   ├── routes/
+│   │   ├── auth.js
+│   │   └── user.js
+│   └── server.js
+├── src/
+│   ├── api/
+│   │   ├── auth.ts
+│   │   └── index.ts
+│   ├── assets/
+│   │   ├── auth/
+│   │   │   ├── create-acc-page/
+│   │   │   ├── landing-page/
+│   │   │   ├── login-loading/
+│   │   │   └── login-page/
+│   │   ├── main-page/
+│   │   │   └── main-page-bg.jpg
+│   │   └── recipes/
+│   │       └── placeholder.txt
+│   ├── components/
+│   │   ├── Logo.tsx
+│   │   └── Screen.tsx
+│   ├── navigation/
+│   │   ├── AppNavigator.tsx
+│   │   └── MainAppNavigator.tsx
+│   ├── screens/
+│   │   ├── auth/
+│   │   │   ├── CreateAccountScreen.tsx
+│   │   │   ├── LandingScreen.tsx
+│   │   │   ├── LoginScreen.tsx
+│   │   │   └── LoginScreenLoading.tsx
+│   │   ├── main/
+│   │   │   ├── ExploreScreen.tsx
+│   │   │   ├── HomeScreen.tsx
+│   │   │   ├── ProfileScreen.tsx
+│   │   │   └── RecipesScreen.tsx
+│   │   └── onboarding/
+│   │       ├── AllergiesScreen.tsx
+│   │       ├── CompletionScreen.tsx
+│   │       ├── CuisinesScreen.tsx
+│   │       ├── DietsScreen.tsx
+│   │       ├── OnboardingContext.tsx
+│   │       ├── OnboardingNavigator.tsx
+│   │       └── RecipesScreen.tsx
+│   ├── styles/
+│   │   ├── auth/
+│   │   │   ├── CreateAccountScreen.styles.ts
+│   │   │   ├── LandingScreen.styles.ts
+│   │   │   ├── LoginScreen.styles.ts
+│   │   │   └── LoginScreenLoading.styles.ts
+│   │   ├── main/
+│   │   │   ├── ExploreScreen.styles.ts
+│   │   │   ├── HomeScreen.styles.ts
+│   │   │   ├── ProfileScreen.styles.ts
+│   │   │   └── RecipesScreen.styles.ts
+│   │   ├── onboarding/
+│   │   │   ├── AllergiesScreen.styles.ts
+│   │   │   ├── CompletionScreen.styles.ts
+│   │   │   ├── CuisinesScreen.styles.ts
+│   │   │   ├── DietsScreen.styles.ts
+│   │   │   └── RecipesScreen.styles.ts
+│   │   └── typography.ts
+│   └── types/
+├── package.json
+└── tsconfig.json
+```
 
 ## Features
 
-### Coming Soon
-- **Recipe Discovery**: Explore a curated collection of easy, nutritious recipes
-- **Recipe of the Day**: Daily inspiration for meal planning
-- **Personal Recipe Box**: Save and organize your favorite recipes
-- **Cooking Tips**: Practical advice and techniques for beginners
-- **Shopping Lists**: Generate grocery lists from selected recipes
-- **Meal Planning**: Weekly meal planning tools and suggestions
-- **Community Features**: Share recipes and cooking experiences with other users
+### Authentication
+- Landing page with login/signup options
+- Email/password login with validation
+- Social login options (Google, Apple)
+- Account creation flow
+- Loading states and transitions
 
-## 🛠 Tech Stack
+### Onboarding
+- Multi-step preference setup:
+  - Cuisine preferences
+  - Dietary restrictions
+  - Recipe types
+  - Allergies
+- Progress tracking
+- Preference saving
 
-- **React Native**: Core framework for mobile development
-- **Expo**: Development platform and tools
-- **React Navigation**: Navigation and routing
-- **Custom Styling**: Styled using React Native's StyleSheet
-- **TypeScript**: Type-safe development
+### Main App
+- Bottom tab navigation with:
+  - Home: Featured recipes and recommendations
+  - Explore: Browse and search recipes
+  - Recipes: Saved and favorite recipes
+  - Profile: User settings and preferences
+- Recipe browsing and search
+- Newsletter subscription
+- Social media integration
 
-## 📂 Project Structure
+## Dependencies
 
-```
-Cooked/
-├── app.json
-├── App.tsx                 # Main application component
-├── assets/                 # Static assets
-├── src/
-│   ├── assets/            # Application-specific assets
-│   ├── components/        # Reusable components
-│   ├── hooks/             # Custom React hooks
-│   ├── navigation/        # Navigation configuration
-│   ├── screens/           # Application screens
-│   ├── services/          # API services
-│   ├── styles/            # Global styles
-│   ├── types/            # TypeScript type definitions
-│   └── utils/            # Utility functions
-└── package.json
-```
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 📄 License
-
-This project is private and proprietary.
-
-## 👥 Authors
-
-- Angelo Navaleza (@ajnavaleza)
+- React Native
+- Expo
+- React Navigation
+- MongoDB (backend)
+- Express.js (backend)
