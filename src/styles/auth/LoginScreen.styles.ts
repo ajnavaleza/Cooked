@@ -15,6 +15,112 @@ const colors = {
 };
 
 export const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FFF',
+  },
+  scrollContainer: {
+    flexGrow: 1,
+  },
+  header: {
+    padding: 20,
+    paddingTop: 60,
+  },
+  backButton: {
+    fontSize: 16,
+    color: '#666',
+  },
+  content: {
+    flex: 1,
+    padding: 20,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 10,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 30,
+  },
+  form: {
+    marginBottom: 30,
+  },
+  input: {
+    backgroundColor: '#F5F5F5',
+    borderRadius: 8,
+    padding: 15,
+    marginBottom: 15,
+    fontSize: 16,
+  },
+  forgotPassword: {
+    alignSelf: 'flex-end',
+    marginBottom: 20,
+  },
+  forgotPasswordText: {
+    color: '#C84B31',
+    fontSize: 14,
+  },
+  loginButton: {
+    backgroundColor: '#C84B31',
+    borderRadius: 8,
+    padding: 15,
+    alignItems: 'center',
+    marginBottom: 30,
+  },
+  loginButtonText: {
+    color: '#FFF',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  dividerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 30,
+  },
+  divider: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#E0E0E0',
+  },
+  dividerText: {
+    color: '#666',
+    paddingHorizontal: 10,
+  },
+  socialButtons: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 30,
+  },
+  socialButton: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#F5F5F5',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 10,
+  },
+  socialIcon: {
+    width: 24,
+    height: 24,
+  },
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  footerText: {
+    color: '#666',
+    fontSize: 14,
+  },
+  signUpText: {
+    color: '#C84B31',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
   screen: {
     flex: 1,
   },
@@ -29,99 +135,17 @@ export const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     backgroundColor: colors.overlay,
   },
-  container: {
-    flex: 1,
-    paddingHorizontal: 24,
-    paddingTop: '20%',
-    zIndex: 1,
-  },
-  title: {
-    fontSize: 32,
-    color: colors.text.primary,
-    fontFamily: typography.fonts.semiBold,
-    marginBottom: 40,
-  },
   inputContainer: {
     gap: 16,
     marginBottom: 24,
   },
-  input: {
-    height: 50,
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    backgroundColor: colors.inputBackground,
-    color: colors.text.primary,
-    fontSize: typography.sizes.md,
-    fontFamily: typography.fonts.regular,
+  loginButtonDisabled: {
+    opacity: 0.5,
   },
-  loginButton: {
-    backgroundColor: colors.white,
-    borderRadius: 8,
-    height: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 16,
-  },
-  loginButtonText: {
-    color: colors.primary,
-    fontSize: typography.sizes.lg,
-    fontFamily: typography.fonts.semiBold,
-  },
-  footerContainer: {
-    marginTop: 'auto',
-    paddingBottom: 40,
-  },
-  signUpContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 24,
-  },
-  footerText: {
-    color: colors.text.secondary,
-    fontSize: typography.sizes.sm,
-    fontFamily: typography.fonts.regular,
-  },
-  linkText: {
-    color: colors.text.primary,
-    fontSize: typography.sizes.sm,
-    fontFamily: typography.fonts.semiBold,
-    textDecorationLine: 'underline',
-  },
-  dividerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 24,
-  },
-  divider: {
+  loadingContainer: {
     flex: 1,
-    height: 1,
-    backgroundColor: colors.text.secondary,
-  },
-  dividerText: {
-    color: colors.text.secondary,
-    marginHorizontal: 16,
-    fontSize: typography.sizes.sm,
-    fontFamily: typography.fonts.regular,
-  },
-  socialContainer: {
-    flexDirection: 'row',
     justifyContent: 'center',
-    gap: 32,
-  },
-  socialButton: {
-    width: 40,
-    height: 40,
     alignItems: 'center',
-    justifyContent: 'center',
-  },
-  termsContainer: {
-    alignItems: 'center',
-    marginTop: 24,
-  },
-  termsText: {
-    color: colors.text.secondary,
-    fontSize: typography.sizes.sm,
-    fontFamily: typography.fonts.regular,
-    textAlign: 'center',
+    backgroundColor: '#FFF',
   },
 }); 

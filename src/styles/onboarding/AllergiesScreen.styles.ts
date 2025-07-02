@@ -2,6 +2,12 @@ import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#A9BEE8', alignItems: 'center', paddingTop: 40 },
+  loadingContainer: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   progressBarContainer: { flexDirection: 'row', width: '80%', height: 6, borderRadius: 3, marginBottom: 24, overflow: 'hidden' },
   progressBar: { height: 6 },
   header: { fontSize: 48, fontWeight: 'bold', color: '#FFF', marginBottom: 12, fontFamily: 'Obviously Narrow Semibold' },

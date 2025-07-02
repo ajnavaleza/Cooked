@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useOnboarding } from './OnboardingContext';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -29,29 +29,52 @@ type NavigationProp = NativeStackNavigationProp<OnboardingStackParamList, 'Cuisi
 
 const CuisinesScreen = () => {
   const navigation = useNavigation<NavigationProp>();
-  const { answers, setAnswers } = useOnboarding();
+  const { answers, setAnswers, submitOnboardingProfile } = useOnboarding();
   const [selected, setSelected] = useState<string[]>(answers.cuisines);
+  const [isLoading, setIsLoading] = useState(false);
 
   const toggleCuisine = (cuisine: string) => {
     setSelected(prev => prev.includes(cuisine) ? prev.filter(c => c !== cuisine) : [...prev, cuisine]);
   };
 
-  const handleSubmit = () => {
-    setAnswers(prev => {
-      const updated = { ...prev, cuisines: selected };
-      console.log('Onboarding data after cuisines:', updated);
-      return updated;
-    });
-    navigation.navigate('Diets');
+  const handleSubmit = async () => {
+    try {
+      setIsLoading(true);
+      setAnswers(prev => {
+        const updated = { ...prev, cuisines: selected };
+        return updated;
+      });
+      
+      await submitOnboardingProfile({ ...answers, cuisines: selected });
+      navigation.navigate('Diets');
+    } catch (error: any) {
+      Alert.alert(
+        'Error',
+        'Failed to save your preferences. Please try again.'
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleSkip = () => {
-    setAnswers(prev => {
-      const updated = { ...prev, cuisines: ['American', 'Italian'] };
-      console.log('Onboarding data after cuisines (skipped):', updated);
-      return updated;
-    });
-    navigation.navigate('Diets');
+  const handleSkip = async () => {
+    try {
+      setIsLoading(true);
+      setAnswers(prev => {
+        const updated = { ...prev, cuisines: ['Any'] };
+        return updated;
+      });
+      
+      await submitOnboardingProfile({ ...answers, cuisines: ['Any'] });
+      navigation.navigate('Diets');
+    } catch (error: any) {
+      Alert.alert(
+        'Error',
+        'Failed to save your preferences. Please try again.'
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

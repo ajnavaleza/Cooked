@@ -4,7 +4,7 @@ import { styles } from '../../styles/auth/LoginScreenLoading.styles';
 import Screen from '../../components/Screen';
 import Logo from '../../components/Logo';
 import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigation/AppNavigator';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'LoginLoading'>;
@@ -13,10 +13,11 @@ const LoginScreenLoading = () => {
   const navigation = useNavigation<NavigationProp>();
 
   useEffect(() => {
-    // Simulate loading time and then navigate to main app
     const timer = setTimeout(() => {
-      // TODO: Navigate to main app screen once created
-      // navigation.replace('MainApp');
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'MainApp' }],
+      });
     }, 2000);
 
     return () => clearTimeout(timer);

@@ -5,31 +5,55 @@ import {
   TextInput, 
   TouchableOpacity, 
   ImageBackground,
+  ActivityIndicator,
+  Alert,
+  Image,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import { styles } from '../../styles/auth/LoginScreen.styles';
 import Screen from '../../components/Screen';
 import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigation/AppNavigator';
+import * as auth from '../../api/auth';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
 
 const LoginScreen = () => {
   const navigation = useNavigation<NavigationProp>();
-  const [formData, setFormData] = useState({
-    username: '',
-    password: '',
-  });
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleInputChange = (field: keyof typeof formData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
+  const handleLogin = async () => {
+    if (isLoading) return;
+    if (!email || !password) {
+      Alert.alert('Error', 'Please enter both email and password');
+      return;
+    }
 
-  const handleLogin = () => {
-    // For testing: Navigate to loading screen if there's any input
-    if (formData.username.length > 0 || formData.password.length > 0) {
-      navigation.navigate('LoginLoading');
+    setIsLoading(true);
+    try {
+      const response = await auth.login(email, password);
+      
+      // If we have preferences, go to main app, otherwise go to onboarding
+      if (response.user.preferences?.cuisines?.length > 0) {
+        // TODO: Navigate to main app once implemented
+        navigation.navigate('LoginLoading');
+      } else {
+        navigation.navigate('LoginLoading');
+      }
+    } catch (error: any) {
+      navigation.goBack(); // Go back from loading screen
+      Alert.alert(
+        'Login Failed',
+        error.response?.data?.error || 'Something went wrong. Please try again.'
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -37,53 +61,70 @@ const LoginScreen = () => {
     navigation.navigate('CreateAccount');
   };
 
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#A9BEE8" />
+      </View>
+    );
+  }
+
   return (
-    <Screen style={styles.screen}>
-      <ImageBackground 
-        source={require('../../assets/auth/login-page/login-page.jpg')} 
-        style={styles.background}
-        resizeMode="cover"
-      />
-      <View style={styles.overlay} />
-      
-      <View style={styles.container}>
-        <Text style={styles.title}>Welcome Back!</Text>
-        
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Username"
-            placeholderTextColor="rgba(255, 255, 255, 0.6)"
-            value={formData.username}
-            onChangeText={(value) => handleInputChange('username', value)}
-            autoCapitalize="none"
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            placeholderTextColor="rgba(255, 255, 255, 0.6)"
-            value={formData.password}
-            onChangeText={(value) => handleInputChange('password', value)}
-            secureTextEntry
-          />
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}
+    >
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Text style={styles.backButton}>Back</Text>
+          </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-          <Text style={styles.loginButtonText}>Log In</Text>
-        </TouchableOpacity>
+        <View style={styles.content}>
+          <Text style={styles.title}>Welcome back!</Text>
+          <Text style={styles.subtitle}>Please sign in to continue</Text>
 
-        <View style={styles.footerContainer}>
-          <View style={styles.signUpContainer}>
-            <Text style={styles.footerText}>
-              New User?{' '}
-              <Text 
-                style={styles.linkText}
-                onPress={handleCreateAccount}
-              >
-                Sign Up!
+          <View style={styles.form}>
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              placeholderTextColor="rgba(255, 255, 255, 0.6)"
+              value={email}
+              onChangeText={setEmail}
+              autoCapitalize="none"
+              keyboardType="email-address"
+              autoComplete="email"
+              editable={!isLoading}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Password"
+              placeholderTextColor="rgba(255, 255, 255, 0.6)"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+              autoComplete="password"
+              editable={!isLoading}
+            />
+
+            <TouchableOpacity 
+              style={styles.forgotPassword}
+              onPress={() => {/* Handle forgot password */}}
+              disabled={isLoading}
+            >
+              <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={[styles.loginButton, isLoading && { opacity: 0.7 }]}
+              onPress={handleLogin}
+              disabled={isLoading}
+            >
+              <Text style={styles.loginButtonText}>
+                {isLoading ? 'Logging in...' : 'Login'}
               </Text>
-            </Text>
-            <Text style={styles.linkText}>Forgot Password?</Text>
+            </TouchableOpacity>
           </View>
 
           <View style={styles.dividerContainer}>
@@ -92,26 +133,33 @@ const LoginScreen = () => {
             <View style={styles.divider} />
           </View>
 
-          <View style={styles.socialContainer}>
-            <TouchableOpacity style={styles.socialButton}>
-              <FontAwesome name="facebook" size={24} color="#FFFFFF" />
+          <View style={styles.socialButtons}>
+            <TouchableOpacity 
+              style={styles.socialButton}
+              disabled={isLoading}
+            >
+              <Ionicons name="logo-google" size={24} color="#666" />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.socialButton}>
-              <FontAwesome name="google" size={24} color="#FFFFFF" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.socialButton}>
-              <FontAwesome name="apple" size={24} color="#FFFFFF" />
+            <TouchableOpacity 
+              style={styles.socialButton}
+              disabled={isLoading}
+            >
+              <Ionicons name="logo-apple" size={24} color="#666" />
             </TouchableOpacity>
           </View>
 
-          <View style={styles.termsContainer}>
-            <Text style={styles.termsText}>
-              By creating or logging into an account you are agreeing{'\n'}to the Terms and Conditions and Privacy Statement
-            </Text>
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>Don't have an account? </Text>
+            <TouchableOpacity 
+              onPress={handleCreateAccount}
+              disabled={isLoading}
+            >
+              <Text style={styles.signUpText}>Sign up</Text>
+            </TouchableOpacity>
           </View>
         </View>
-      </View>
-    </Screen>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 

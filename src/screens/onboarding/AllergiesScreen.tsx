@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, TextInput } from 'react-native';
+import { 
+  View, 
+  Text, 
+  TouchableOpacity, 
+  ScrollView, 
+  TextInput,
+  ActivityIndicator,
+  Alert,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useOnboarding } from './OnboardingContext';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -23,27 +31,54 @@ const AllergiesScreen = () => {
   const { answers, setAnswers, submitOnboardingProfile } = useOnboarding();
   const [selected, setSelected] = useState<string[]>(answers.allergies);
   const [other, setOther] = useState(answers.allergyOther || '');
+  const [isLoading, setIsLoading] = useState(false);
 
   const toggleAllergy = (allergy: string) => {
     setSelected(prev => prev.includes(allergy) ? prev.filter(a => a !== allergy) : [...prev, allergy]);
   };
 
   const handleSubmit = async () => {
-    setAnswers(prev => {
-      const updated = { ...prev, allergies: selected, allergyOther: other };
-      console.log('Onboarding data after allergies:', updated);
-      return updated;
-    });
-    await submitOnboardingProfile({ ...answers, allergies: selected, allergyOther: other });
-    // TODO: Navigate to main app/home screen
-    // navigation.replace('MainApp');
+    try {
+      setIsLoading(true);
+      setAnswers(prev => {
+        const updated = { ...prev, allergies: selected, allergyOther: other };
+        return updated;
+      });
+      
+      await submitOnboardingProfile({ ...answers, allergies: selected, allergyOther: other });
+      navigation.navigate('Completion');
+    } catch (error: any) {
+      Alert.alert(
+        'Error',
+        'Failed to save your preferences. Please try again.'
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSkip = async () => {
-    await submitOnboardingProfile({ ...answers, allergies: ['None'], allergyOther: '' });
-    // TODO: Navigate to main app/home screen
-    // navigation.replace('MainApp');
+    try {
+      setIsLoading(true);
+      await submitOnboardingProfile({ ...answers, allergies: ['None'], allergyOther: '' });
+      navigation.navigate('Completion');
+    } catch (error: any) {
+      Alert.alert(
+        'Error',
+        'Failed to save your preferences. Please try again.'
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#A9BEE8" />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -85,10 +120,18 @@ const AllergiesScreen = () => {
           <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
             <Text style={styles.backText}>Back</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+          <TouchableOpacity 
+            style={styles.submitButton} 
+            onPress={handleSubmit}
+            disabled={isLoading}
+          >
             <Text style={styles.submitText}>Submit</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.skipButton} onPress={handleSkip}>
+          <TouchableOpacity 
+            style={styles.skipButton} 
+            onPress={handleSkip}
+            disabled={isLoading}
+          >
             <Text style={styles.skipText}>Skip</Text>
           </TouchableOpacity>
         </View>

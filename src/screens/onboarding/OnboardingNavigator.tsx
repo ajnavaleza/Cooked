@@ -6,12 +6,14 @@ import CuisinesScreen from './CuisinesScreen';
 import DietsScreen from './DietsScreen';
 import RecipesScreen from './RecipesScreen';
 import AllergiesScreen from './AllergiesScreen';
+import CompletionScreen from './CompletionScreen';
 
 export type OnboardingStackParamList = {
   Cuisines: undefined;
   Diets: undefined;
   Recipes: undefined;
   Allergies: undefined;
+  Completion: undefined;
 };
 
 const Stack = createNativeStackNavigator<OnboardingStackParamList>();
@@ -21,7 +23,7 @@ const OnboardingNavigator = () => (
     screenOptions={{ 
       headerShown: false,
       gestureEnabled: false,
-      animation: 'fade',
+      animation: 'slide_from_right',
       animationDuration: 800,
     }}
   >
@@ -29,7 +31,7 @@ const OnboardingNavigator = () => (
       name="Cuisines" 
       component={CuisinesScreen}
       options={{
-        animation: 'fade',
+        animation: 'slide_from_right',
         animationDuration: 800,
       }}
     />
@@ -37,7 +39,7 @@ const OnboardingNavigator = () => (
       name="Diets" 
       component={DietsScreen}
       options={{
-        animation: 'fade',
+        animation: 'slide_from_right',
         animationDuration: 800,
       }}
     />
@@ -45,7 +47,7 @@ const OnboardingNavigator = () => (
       name="Recipes" 
       component={RecipesScreen}
       options={{
-        animation: 'fade',
+        animation: 'slide_from_right',
         animationDuration: 800,
       }}
     />
@@ -53,7 +55,15 @@ const OnboardingNavigator = () => (
       name="Allergies" 
       component={AllergiesScreen}
       options={{
-        animation: 'fade',
+        animation: 'slide_from_right',
+        animationDuration: 800,
+      }}
+    />
+    <Stack.Screen 
+      name="Completion" 
+      component={CompletionScreen}
+      options={{
+        animation: 'slide_from_right',
         animationDuration: 800,
       }}
     />

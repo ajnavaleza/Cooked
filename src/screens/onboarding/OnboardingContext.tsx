@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
+import * as auth from '../../api/auth';
 
 export type OnboardingAnswers = {
   // Signup fields
@@ -41,11 +42,22 @@ export const useOnboarding = () => useContext(OnboardingContext);
 export const OnboardingProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [answers, setAnswers] = useState<OnboardingAnswers>(defaultAnswers);
 
-  // Placeholder for backend submission
   const submitOnboardingProfile = async (profile: OnboardingAnswers) => {
-    // TODO: Send profile to backend API
-    console.log('Submitting onboarding profile:', profile);
-    // Example: await api.post('/user/onboarding', profile);
+    try {
+      // Extract only the preferences-related fields
+      const preferences = {
+        cuisines: profile.cuisines || [],
+        diets: profile.diets || [],
+        recipeTypes: profile.recipeTypes || [],
+        allergies: profile.allergies || [],
+        allergyOther: profile.allergyOther || '',
+      };
+
+      // Update user preferences in the backend
+      await auth.updatePreferences(preferences);
+    } catch (error: any) {
+      throw new Error(error.response?.data?.error || 'Failed to update preferences');
+    }
   };
 
   return (

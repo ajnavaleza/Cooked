@@ -6,7 +6,7 @@ const { width, height } = Dimensions.get('window');
 const colors = {
   primary: '#4A3531',
   white: '#FFFFFF',
-  overlay: 'rgba(177, 170, 69, 0.9)', // #B1AA45 with 90% opacity
+  overlay: 'rgba(233, 224, 99, 0.9)', // #B1AA45 with 90% opacity
   inputBackground: 'rgba(0, 0, 0, 0.1)',
   text: {
     primary: '#000000',
@@ -17,6 +17,18 @@ const colors = {
 export const styles = StyleSheet.create({
   screen: {
     flex: 1,
+  },
+  scrollView: {
+    flex: 1,
+    width: '100%',
+  },
+  scrollViewContent: {
+    flexGrow: 1,
+    paddingBottom: 20,
+  },
+  actionContainer: {
+    width: '100%',
+    marginTop: 20,
   },
   background: {
     position: 'absolute',
@@ -95,13 +107,20 @@ export const styles = StyleSheet.create({
     marginTop: 240,
   },
   signUpButton: {
-    backgroundColor: colors.text.primary,
     borderRadius: 8,
     height: 56,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 16,
     width: '100%',
+  },
+  signUpButtonEnabled: {
+    backgroundColor: colors.text.primary,
+    opacity: 1,
+  },
+  signUpButtonDisabled: {
+    backgroundColor: '#CCCCCC',
+    opacity: 0.7,
   },
   signUpButtonText: {
     color: colors.white,
@@ -158,5 +177,27 @@ export const styles = StyleSheet.create({
     height: 40,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+  },
+  passwordRequirements: {
+    marginTop: 4,
+    marginBottom: 8,
+    paddingHorizontal: 4,
+  },
+  requirementText: {
+    fontSize: 12,
+    fontFamily: typography.fonts.regular,
+    marginVertical: 2,
+  },
+  requirementMet: {
+    color: '#4CAF50', // Green color for met requirements
+  },
+  requirementNotMet: {
+    color: '#FF5252', // Red color for unmet requirements
   },
 }); 

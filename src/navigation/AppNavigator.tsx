@@ -6,15 +6,18 @@ import LoginScreen from '../screens/auth/LoginScreen';
 import CreateAccountScreen from '../screens/auth/CreateAccountScreen';
 import LoginScreenLoading from '../screens/auth/LoginScreenLoading';
 import OnboardingNavigator from '../screens/onboarding/OnboardingNavigator';
+import MainAppNavigator from './MainAppNavigator';
 import { Platform } from 'react-native';
 import type { NativeStackNavigationOptions } from '@react-navigation/native-stack';
+import type { OnboardingStackParamList } from '../screens/onboarding/OnboardingNavigator';
 
 export type RootStackParamList = {
   Landing: undefined;
   Login: undefined;
   CreateAccount: undefined;
   LoginLoading: undefined;
-  Onboarding: undefined;
+  Onboarding: { screen?: keyof OnboardingStackParamList } | undefined;
+  MainApp: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -64,6 +67,10 @@ const AppNavigator = () => {
         <Stack.Screen 
           name="Onboarding" 
           component={OnboardingNavigator}
+        />
+        <Stack.Screen 
+          name="MainApp" 
+          component={MainAppNavigator}
         />
       </Stack.Navigator>
     </NavigationContainer>
