@@ -33,7 +33,6 @@ const DietsScreen = () => {
   const handleSubmit = () => {
     setAnswers(prev => {
       const updated = { ...prev, diets: selected };
-      console.log('Onboarding data after diets:', updated);
       return updated;
     });
     navigation.navigate('Recipes');
@@ -42,7 +41,6 @@ const DietsScreen = () => {
   const handleSkip = () => {
     setAnswers(prev => {
       const updated = { ...prev, diets: ['No specific diet'] };
-      console.log('Onboarding data after diets (skipped):', updated);
       return updated;
     });
     navigation.navigate('Recipes');

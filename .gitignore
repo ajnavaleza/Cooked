@@ -81,6 +81,10 @@ android/.gradle/
 
 # MongoDB
 cooked-backend/data/
+cooked-backend/.env
+cooked-backend/.env.*
+cooked-backend/logs/
+cooked-backend/uploads/
 *.dump
 
 # Logs and debugging
@@ -90,6 +94,8 @@ yarn-error.log*
 debug.log
 *.log
 
+DEPLOYMENT.md
+
 # API keys and secrets
 google-services.json
 GoogleService-Info.plist
@@ -97,6 +103,35 @@ firebase.json
 firebaseConfig.js
 aws-exports.js
 amplify/
+secrets.json
+config.json
+*.pem
+*.key
+*.crt
+*.csr
+*.p12
+*.pfx
+
+# Deployment guides and documentation
+DEPLOYMENT.md
+deployment-guide.md
+deploy.md
+
+# Process managers
+.pm2/
+pm2.log
+ecosystem.config.js
+pm2-logs/
+
+# Railway deployment secrets
+.railway/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+dump.rdb
+*.dump
 
 # Testing
 coverage/

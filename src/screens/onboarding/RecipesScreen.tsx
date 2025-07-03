@@ -38,7 +38,6 @@ const RecipesScreen = () => {
   const handleSubmit = () => {
     setAnswers(prev => {
       const updated = { ...prev, recipeTypes: selected };
-      console.log('Onboarding data after recipes:', updated);
       return updated;
     });
     navigation.navigate('Allergies');
@@ -47,7 +46,6 @@ const RecipesScreen = () => {
   const handleSkip = () => {
     setAnswers(prev => {
       const updated = { ...prev, recipeTypes: ['Dinner', 'Lunch'] };
-      console.log('Onboarding data after recipes (skipped):', updated);
       return updated;
     });
     navigation.navigate('Allergies');

@@ -32,62 +32,35 @@ const ProfileScreen = () => {
   const [activeTab, setActiveTab] = useState<'created' | 'saved'>('created');
 
   useEffect(() => {
+    const loadUserProfile = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token');
+        if (!token) {
+          setLoading(false);
+          return;
+        }
+
+        const userData = await auth.getUser();
+        setUser(userData);
+      } catch (error) {
+        Alert.alert('Error', 'Failed to load user profile');
+      } finally {
+        setLoading(false);
+      }
+    };
+
     loadUserProfile();
   }, []);
 
-  const loadUserProfile = async () => {
-    try {
-      console.log('[ProfileScreen] Loading user profile...');
-      
-      // Check if user is logged in
-      const token = await AsyncStorage.getItem('token');
-      if (!token) {
-        console.log('[ProfileScreen] No auth token found');
-        setLoading(false);
-        return;
-      }
-
-      const userData = await auth.getUser();
-      console.log('[ProfileScreen] User data loaded:', {
-        email: userData.email,
-        hasPreferences: !!userData.preferences,
-        preferences: userData.preferences
-      });
-      
-      setUser(userData);
-    } catch (error: any) {
-      console.error('[ProfileScreen] Error loading user:', error);
-      Alert.alert('Error', 'Failed to load profile information');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleLogout = async () => {
-    Alert.alert(
-      'Logout',
-      'Are you sure you want to logout?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Logout',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await auth.logout();
-              // Navigate back to auth flow
-              navigation.reset({
-                index: 0,
-                routes: [{ name: 'Landing' as never }],
-              });
-            } catch (error) {
-              console.error('Logout error:', error);
-              Alert.alert('Error', 'Failed to logout');
-            }
-          },
-        },
-      ]
-    );
+    try {
+      await AsyncStorage.removeItem('token');
+      await AsyncStorage.removeItem('userData');
+      // Navigate to login screen
+      Alert.alert('Success', 'Logged out successfully');
+    } catch (error) {
+      Alert.alert('Error', 'Failed to logout');
+    }
   };
 
   const handleEditProfile = () => {

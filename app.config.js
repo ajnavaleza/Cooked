@@ -8,7 +8,8 @@ export default {
     orientation: "portrait",
     icon: "./assets/icon.png",
     userInterfaceStyle: "light",
-    newArchEnabled: true,
+    newArchEnabled: false,
+    platforms: ["ios", "android"], // Remove web support
     splash: {
       image: "./assets/splash-icon.png",
       resizeMode: "contain",
@@ -24,12 +25,10 @@ export default {
       },
       edgeToEdgeEnabled: true
     },
-    web: {
-      favicon: "./assets/favicon.png"
-    },
     extra: {
       SPOONACULAR_API_KEY: process.env.EXPO_PUBLIC_SPOONACULAR_API_KEY,
       LOCAL_API_URL: process.env.EXPO_PUBLIC_LOCAL_API_URL,
+      API_BASE_URL: process.env.EXPO_PUBLIC_API_BASE_URL,
     }
   }
 }; 

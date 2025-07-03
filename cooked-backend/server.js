@@ -10,6 +10,15 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Health check endpoint
+app.get('/', (req, res) => {
+  res.json({ 
+    status: 'healthy', 
+    message: 'Cooked Backend API is running!', 
+    timestamp: new Date().toISOString() 
+  });
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 
@@ -31,8 +40,13 @@ async function connectDB() {
     });
     
     const port = process.env.PORT || 5000;
-    app.listen(port, () => {
+    app.listen(port, '0.0.0.0', () => {
       console.log(`✅ Server running on port ${port}`);
+      if (process.env.NODE_ENV === 'production') {
+        console.log(`✅ Server running in production mode`);
+      } else {
+        console.log(`✅ Server accessible at http://192.168.1.154:${port}`);
+      }
       console.log(`✅ MongoDB connected successfully`);
     });
   } catch (err) {

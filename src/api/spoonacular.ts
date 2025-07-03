@@ -1,11 +1,9 @@
 import axios from 'axios';
 import { API_CONFIG } from '../config/api';
 
-console.log('[Spoonacular] Initializing with API key:', API_CONFIG.SPOONACULAR_API_KEY ? `${API_CONFIG.SPOONACULAR_API_KEY.slice(0, 8)}...` : 'MISSING');
-
 const spoonacularAPI = axios.create({
   baseURL: API_CONFIG.SPOONACULAR_BASE_URL,
-  timeout: API_CONFIG.REQUEST_TIMEOUT,
+  timeout: API_CONFIG.TIMEOUT,
   headers: {
     'x-api-key': API_CONFIG.SPOONACULAR_API_KEY,
   },
@@ -13,32 +11,6 @@ const spoonacularAPI = axios.create({
     apiKey: API_CONFIG.SPOONACULAR_API_KEY,
   },
 });
-
-// Add request interceptor for debugging
-spoonacularAPI.interceptors.request.use(
-  (config) => {
-    console.log('[Spoonacular] Making request to:', config.url);
-    console.log('[Spoonacular] Headers:', config.headers);
-    console.log('[Spoonacular] Params:', config.params);
-    return config;
-  },
-  (error) => {
-    console.error('[Spoonacular] Request error:', error);
-    return Promise.reject(error);
-  }
-);
-
-// Add response interceptor for debugging
-spoonacularAPI.interceptors.response.use(
-  (response) => {
-    console.log('[Spoonacular] Response status:', response.status);
-    return response;
-  },
-  (error) => {
-    console.error('[Spoonacular] Response error:', error.response?.status, error.response?.data);
-    return Promise.reject(error);
-  }
-);
 
 // Types for Spoonacular API responses
 export interface SpoonacularRecipe {

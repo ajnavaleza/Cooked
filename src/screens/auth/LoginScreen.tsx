@@ -29,45 +29,21 @@ const LoginScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async () => {
-    if (isLoading) return;
     if (!email || !password) {
-      Alert.alert('Error', 'Please enter both email and password');
+      Alert.alert('Error', 'Please fill in all fields');
       return;
     }
 
     setIsLoading(true);
     try {
-      console.log('[LoginScreen] Attempting login for:', email);
       const response = await auth.login(email, password);
-      console.log('[LoginScreen] Login successful:', !!response.token);
-      
-      // Navigate to loading screen on successful login
-      navigation.navigate('LoginLoading');
-    } catch (error: any) {
-      console.error('[LoginScreen] Login failed:', error);
-      
-      // Check if it's a network error vs authentication error
-      if (error.code === 'NETWORK_ERROR' || error.message?.includes('Network Error')) {
-        Alert.alert(
-          'Connection Error',
-          'Unable to connect to the server. Please check your internet connection and try again.'
-        );
-      } else if (error.response?.status === 400) {
-        Alert.alert(
-          'Login Failed',
-          'Invalid email or password. Please check your credentials and try again.'
-        );
-      } else if (error.response?.status === 500) {
-        Alert.alert(
-          'Server Error',
-          'Server is currently unavailable. Please try again later.'
-        );
+      if (response.token) {
+        navigation.replace('MainApp');
       } else {
-        Alert.alert(
-          'Login Failed',
-          error.response?.data?.error || 'Something went wrong. Please try again.'
-        );
+        Alert.alert('Error', 'Invalid login credentials');
       }
+    } catch (error: any) {
+      Alert.alert('Error', 'Login failed. Please try again.');
     } finally {
       setIsLoading(false);
     }

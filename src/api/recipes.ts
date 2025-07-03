@@ -112,7 +112,6 @@ class RecipeService {
         hasMore: result.offset + recipes.length < result.totalResults,
       };
     } catch (error) {
-      console.error('Error searching recipes:', error);
       return this.getFallbackRecipes(limit);
     }
   }
@@ -120,27 +119,20 @@ class RecipeService {
   // Get random recipes
   async getRandomRecipes(tags?: string, count: number = 6): Promise<Recipe[]> {
     try {
-      console.log(`[RecipeService] Getting ${count} random recipes with tags: ${tags || 'none'}`);
-      
       const cacheKey = `random_${tags || 'all'}_${count}`;
       const cachedData = this.getCacheData(cacheKey);
       
       if (cachedData) {
-        console.log(`[RecipeService] Returning ${cachedData.length} cached recipes`);
         return cachedData;
       }
 
-      console.log('[RecipeService] Making API call to get random recipes...');
       const result = await spoonacularApi.getRandomRecipes({
         tags,
         number: count,
         include_nutrition: true,
       });
-
-      console.log(`[RecipeService] API returned ${result.recipes?.length || 0} recipes`);
       
       if (!result.recipes || result.recipes.length === 0) {
-        console.warn('[RecipeService] API returned no recipes, using fallback');
         return this.getFallbackRecipes(count).recipes;
       }
 
@@ -149,19 +141,9 @@ class RecipeService {
         source: 'spoonacular' as const,
       }));
 
-      console.log(`[RecipeService] Transformed ${recipes.length} recipes:`, recipes.map(r => ({ title: r.title, source: r.source })));
-
       this.setCacheData(cacheKey, recipes);
       return recipes;
     } catch (error: any) {
-      console.error('[RecipeService] Error getting random recipes:', error);
-      console.error('[RecipeService] Error details:', {
-        message: error.message,
-        status: error.response?.status,
-        statusText: error.response?.statusText,
-        data: error.response?.data
-      });
-      console.log('[RecipeService] Returning fallback recipes');
       return this.getFallbackRecipes(count).recipes;
     }
   }
@@ -188,7 +170,6 @@ class RecipeService {
       this.setCacheData(cacheKey, [transformedRecipe]);
       return transformedRecipe;
     } catch (error) {
-      console.error('Error getting recipe by ID:', error);
       return null;
     }
   }
@@ -238,7 +219,6 @@ class RecipeService {
       this.setCacheData(cacheKey, recipes);
       return recipes;
     } catch (error) {
-      console.error('Error getting personalized recipes:', error);
       return this.getFallbackRecipes(limit).recipes;
     }
   }
@@ -285,7 +265,6 @@ class RecipeService {
       this.setCacheData(cacheKey, detailedRecipes);
       return detailedRecipes;
     } catch (error) {
-      console.error('Error searching recipes by ingredients:', error);
       return this.getFallbackRecipes(limit).recipes;
     }
   }
@@ -299,7 +278,6 @@ class RecipeService {
         title: item.title,
       }));
     } catch (error) {
-      console.error('Error getting recipe suggestions:', error);
       return [];
     }
   }
@@ -310,7 +288,6 @@ class RecipeService {
       await API.post('/user/favorites', { recipeId });
       return true;
     } catch (error) {
-      console.error('Error saving favorite recipe:', error);
       return false;
     }
   }
@@ -326,7 +303,6 @@ class RecipeService {
       );
       return favoriteRecipes.filter(recipe => recipe !== null) as Recipe[];
     } catch (error) {
-      console.error('Error getting favorite recipes:', error);
       return [];
     }
   }
