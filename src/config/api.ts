@@ -1,11 +1,11 @@
 import Constants from 'expo-constants';
 
 const getApiBaseUrl = () => {
-  // Use environment variable if available, otherwise fallback to local
+  // Use environment variable if available, otherwise fallback to Railway production URL
   const deployedUrl = Constants.expoConfig?.extra?.API_BASE_URL;
-  const localUrl = 'http://192.168.1.154:5000';
+  const railwayUrl = 'https://cooked-production.up.railway.app/api';
   
-  return deployedUrl || localUrl;
+  return deployedUrl || railwayUrl;
 };
 
 export const API_CONFIG = {

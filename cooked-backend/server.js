@@ -34,9 +34,28 @@ async function connectDB() {
     console.log('🧠 Using MongoDB Memory Server for development');
   }
 
+  // Ensure we're connecting to the correct database
+  if (mongoUri && !mongoUri.includes('/cooked-app')) {
+    // If the URI doesn't already specify a database, add /cooked-app
+    if (mongoUri.includes('mongodb://') || mongoUri.includes('mongodb+srv://')) {
+      // Check if there's already a database specified
+      const uriParts = mongoUri.split('?');
+      const baseUri = uriParts[0];
+      const queryParams = uriParts[1] ? '?' + uriParts[1] : '';
+      
+      // If no database is specified in the URI, add /cooked-app
+      if (!baseUri.includes('.net/') && !baseUri.includes('.com/') && !baseUri.includes('localhost/')) {
+        mongoUri = baseUri + '/cooked-app' + queryParams;
+      } else if (baseUri.endsWith('.net') || baseUri.endsWith('.com') || baseUri.endsWith('localhost')) {
+        mongoUri = baseUri + '/cooked-app' + queryParams;
+      }
+    }
+  }
+
   try {
     await mongoose.connect(mongoUri, {
       serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
+      dbName: 'cooked-app' // Explicitly specify the database name
     });
     
     const port = process.env.PORT || 5000;
@@ -47,7 +66,7 @@ async function connectDB() {
       } else {
         console.log(`✅ Server accessible at http://192.168.1.154:${port}`);
       }
-      console.log(`✅ MongoDB connected successfully`);
+      console.log(`✅ MongoDB connected successfully to cooked-app database`);
     });
   } catch (err) {
     console.error('❌ MongoDB connection failed:', err.message);
