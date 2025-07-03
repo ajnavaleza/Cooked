@@ -13,6 +13,7 @@ import { styles } from '../../styles/main/ProfileScreen.styles';
 import * as auth from '../../api/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import { CommonActions } from '@react-navigation/native';
 
 interface UserData {
   email: string;
@@ -53,14 +54,36 @@ const ProfileScreen = () => {
   }, []);
 
   const handleLogout = async () => {
-    try {
-      await AsyncStorage.removeItem('token');
-      await AsyncStorage.removeItem('userData');
-      // Navigate to login screen
-      Alert.alert('Success', 'Logged out successfully');
-    } catch (error) {
-      Alert.alert('Error', 'Failed to logout');
-    }
+    Alert.alert(
+      'Logout',
+      'Are you sure you want to logout?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Logout',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await AsyncStorage.removeItem('token');
+              await AsyncStorage.removeItem('userData');
+              
+              // Navigate back to Landing screen
+              navigation.dispatch(
+                CommonActions.reset({
+                  index: 0,
+                  routes: [{ name: 'Landing' }],
+                })
+              );
+            } catch (error) {
+              Alert.alert('Error', 'Failed to logout');
+            }
+          },
+        },
+      ]
+    );
   };
 
   const handleEditProfile = () => {
