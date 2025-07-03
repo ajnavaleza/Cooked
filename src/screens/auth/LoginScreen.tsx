@@ -37,21 +37,37 @@ const LoginScreen = () => {
 
     setIsLoading(true);
     try {
+      console.log('[LoginScreen] Attempting login for:', email);
       const response = await auth.login(email, password);
+      console.log('[LoginScreen] Login successful:', !!response.token);
       
-      // If we have preferences, go to main app, otherwise go to onboarding
-      if (response.user.preferences?.cuisines?.length > 0) {
-        // TODO: Navigate to main app once implemented
-        navigation.navigate('LoginLoading');
-      } else {
-        navigation.navigate('LoginLoading');
-      }
+      // Navigate to loading screen on successful login
+      navigation.navigate('LoginLoading');
     } catch (error: any) {
-      navigation.goBack(); // Go back from loading screen
-      Alert.alert(
-        'Login Failed',
-        error.response?.data?.error || 'Something went wrong. Please try again.'
-      );
+      console.error('[LoginScreen] Login failed:', error);
+      
+      // Check if it's a network error vs authentication error
+      if (error.code === 'NETWORK_ERROR' || error.message?.includes('Network Error')) {
+        Alert.alert(
+          'Connection Error',
+          'Unable to connect to the server. Please check your internet connection and try again.'
+        );
+      } else if (error.response?.status === 400) {
+        Alert.alert(
+          'Login Failed',
+          'Invalid email or password. Please check your credentials and try again.'
+        );
+      } else if (error.response?.status === 500) {
+        Alert.alert(
+          'Server Error',
+          'Server is currently unavailable. Please try again later.'
+        );
+      } else {
+        Alert.alert(
+          'Login Failed',
+          error.response?.data?.error || 'Something went wrong. Please try again.'
+        );
+      }
     } finally {
       setIsLoading(false);
     }
@@ -70,96 +86,106 @@ const LoginScreen = () => {
   }
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}
+    <ImageBackground
+      source={require('../../assets/auth/login-page/login-page.jpg')}
+      style={styles.backgroundImage}
     >
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Text style={styles.backButton}>Back</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.content}>
-          <Text style={styles.title}>Welcome back!</Text>
-          <Text style={styles.subtitle}>Please sign in to continue</Text>
-
-          <View style={styles.form}>
-            <TextInput
-              style={styles.input}
-              placeholder="Email"
-              placeholderTextColor="rgba(255, 255, 255, 0.6)"
-              value={email}
-              onChangeText={setEmail}
-              autoCapitalize="none"
-              keyboardType="email-address"
-              autoComplete="email"
-              editable={!isLoading}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Password"
-              placeholderTextColor="rgba(255, 255, 255, 0.6)"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry
-              autoComplete="password"
-              editable={!isLoading}
-            />
-
-            <TouchableOpacity 
-              style={styles.forgotPassword}
-              onPress={() => {/* Handle forgot password */}}
-              disabled={isLoading}
-            >
-              <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity 
-              style={[styles.loginButton, isLoading && { opacity: 0.7 }]}
-              onPress={handleLogin}
-              disabled={isLoading}
-            >
-              <Text style={styles.loginButtonText}>
-                {isLoading ? 'Logging in...' : 'Login'}
-              </Text>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.container}
+      >
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <View style={styles.header}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Text style={styles.backButton}>Back</Text>
             </TouchableOpacity>
           </View>
 
-          <View style={styles.dividerContainer}>
-            <View style={styles.divider} />
-            <Text style={styles.dividerText}>or</Text>
-            <View style={styles.divider} />
-          </View>
+          <View style={styles.content}>
+            <Text style={styles.title}>Welcome Back!</Text>
 
-          <View style={styles.socialButtons}>
-            <TouchableOpacity 
-              style={styles.socialButton}
-              disabled={isLoading}
-            >
-              <Ionicons name="logo-google" size={24} color="#666" />
-            </TouchableOpacity>
-            <TouchableOpacity 
-              style={styles.socialButton}
-              disabled={isLoading}
-            >
-              <Ionicons name="logo-apple" size={24} color="#666" />
-            </TouchableOpacity>
-          </View>
+            <View style={styles.form}>
+              <TextInput
+                style={styles.input}
+                placeholder="Username"
+                placeholderTextColor="rgba(255, 255, 255, 0.6)"
+                value={email}
+                onChangeText={setEmail}
+                autoCapitalize="none"
+                keyboardType="email-address"
+                autoComplete="email"
+                editable={!isLoading}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Password"
+                placeholderTextColor="rgba(255, 255, 255, 0.6)"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+                autoComplete="password"
+                editable={!isLoading}
+              />
 
-          <View style={styles.footer}>
-            <Text style={styles.footerText}>Don't have an account? </Text>
-            <TouchableOpacity 
-              onPress={handleCreateAccount}
-              disabled={isLoading}
-            >
-              <Text style={styles.signUpText}>Sign up</Text>
-            </TouchableOpacity>
+              <View style={styles.forgotPasswordContainer}>
+                <TouchableOpacity onPress={handleCreateAccount} disabled={isLoading}>
+                  <Text style={styles.newUserText}>New User? Sign Up!</Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  style={styles.forgotPassword}
+                  onPress={() => {/* Handle forgot password */}}
+                  disabled={isLoading}
+                >
+                  <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+                </TouchableOpacity>
+              </View>
+
+              <TouchableOpacity 
+                style={[styles.loginButton, isLoading && { opacity: 0.7 }]}
+                onPress={handleLogin}
+                disabled={isLoading}
+              >
+                <Text style={styles.loginButtonText}>
+                  {isLoading ? 'Logging in...' : 'Log In'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            <Text style={styles.termsText}>
+              By creating or logging into an account you are agreeing{'\n'}
+              to the Terms and Conditions and Privacy Statement
+            </Text>
+
+            <View style={styles.dividerContainer}>
+              <View style={styles.divider} />
+              <Text style={styles.dividerText}>or</Text>
+              <View style={styles.divider} />
+            </View>
+
+            <View style={styles.socialButtons}>
+              <TouchableOpacity 
+                style={styles.socialButton}
+                disabled={isLoading}
+              >
+                <Ionicons name="logo-facebook" size={24} color="#FFFFFF" />
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={styles.socialButton}
+                disabled={isLoading}
+              >
+                <Ionicons name="logo-google" size={24} color="#FFFFFF" />
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={styles.socialButton}
+                disabled={isLoading}
+              >
+                <Ionicons name="logo-apple" size={24} color="#FFFFFF" />
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </ImageBackground>
   );
 };
 

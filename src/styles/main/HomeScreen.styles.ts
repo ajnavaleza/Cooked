@@ -142,6 +142,18 @@ export const styles = StyleSheet.create({
     color: '#4CAF50',
     fontSize: 12,
   },
+  cuisineTag: {
+    backgroundColor: '#FFE0B2',
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    borderRadius: 12,
+    alignSelf: 'flex-start',
+    marginTop: 5,
+  },
+  cuisineText: {
+    color: '#F57C00',
+    fontSize: 12,
+  },
   seeAllButton: {
     padding: 15,
     borderRadius: 8,
@@ -196,7 +208,23 @@ export const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: '#FFF',
+    marginBottom: 10,
+  },
+  contactSubtitle: {
+    color: '#FFF',
     marginBottom: 20,
+    lineHeight: 20,
+  },
+  contactButton: {
+    backgroundColor: '#FFF',
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  contactButtonText: {
+    color: '#C84B31',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
   socialLinks: {
     flexDirection: 'row',
