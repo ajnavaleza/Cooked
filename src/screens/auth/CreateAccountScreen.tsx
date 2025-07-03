@@ -88,7 +88,7 @@ const CreateAccountScreen = () => {
     try {
       setIsLoading(true);
       // Register the user
-      await auth.register(formData.email, formData.password);
+      await auth.register(formData.email, formData.password, formData.name, formData.birthday);
       
       // If registration successful, login
       const response = await auth.login(formData.email, formData.password);

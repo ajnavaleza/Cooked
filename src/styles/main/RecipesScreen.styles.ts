@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { typography } from '../typography';
 
 export const styles = StyleSheet.create({
   container: {
@@ -10,5 +11,6 @@ export const styles = StyleSheet.create({
   text: {
     fontSize: 20,
     color: '#333',
+    fontFamily: typography.fonts.regular,
   },
 }); 

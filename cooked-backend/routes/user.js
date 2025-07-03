@@ -30,4 +30,18 @@ router.put('/me/preferences', auth, async (req, res) => {
   res.json(user);
 });
 
+router.put('/me/profile', auth, async (req, res) => {
+  const { name, birthday } = req.body;
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      { name, birthday },
+      { new: true }
+    ).select('-password');
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router; 

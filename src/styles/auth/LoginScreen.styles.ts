@@ -39,6 +39,7 @@ export const styles = StyleSheet.create({
   backButton: {
     fontSize: 16,
     color: colors.text.primary,
+    fontFamily: typography.fonts.regular,
   },
   content: {
     width: '100%',
@@ -53,6 +54,7 @@ export const styles = StyleSheet.create({
     color: colors.text.primary,
     marginBottom: 60,
     textAlign: 'center',
+    fontFamily: typography.fonts.bold,
   },
   subtitle: {
     fontSize: 16,
@@ -75,6 +77,7 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     color: colors.text.primary,
     width: '100%',
+    fontFamily: typography.fonts.regular,
   },
   forgotPassword: {
     alignSelf: 'flex-end',
@@ -90,10 +93,12 @@ export const styles = StyleSheet.create({
   forgotPasswordText: {
     color: colors.text.primary,
     fontSize: 14,
+    fontFamily: typography.fonts.regular,
   },
   newUserText: {
     color: colors.text.primary,
     fontSize: 14,
+    fontFamily: typography.fonts.regular,
   },
   loginButton: {
     backgroundColor: 'rgba(74, 53, 49, 0.8)',
@@ -107,6 +112,7 @@ export const styles = StyleSheet.create({
     color: colors.white,
     fontSize: 18,
     fontWeight: 'bold',
+    fontFamily: typography.fonts.bold,
   },
   dividerContainer: {
     flexDirection: 'row',
@@ -123,6 +129,7 @@ export const styles = StyleSheet.create({
   dividerText: {
     color: colors.text.secondary,
     paddingHorizontal: 10,
+    fontFamily: typography.fonts.regular,
   },
   socialButtons: {
     flexDirection: 'row',
@@ -190,5 +197,6 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 30,
     lineHeight: 16,
+    fontFamily: typography.fonts.regular,
   },
 }); 

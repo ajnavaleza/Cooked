@@ -25,6 +25,10 @@ export default {
       },
       edgeToEdgeEnabled: true
     },
+    fonts: [
+      "./src/assets/Obviously Narrow Medium.ttf",
+      "./src/assets/Obviously Narrow Semibold.ttf"
+    ],
     extra: {
       SPOONACULAR_API_KEY: process.env.EXPO_PUBLIC_SPOONACULAR_API_KEY,
       LOCAL_API_URL: process.env.EXPO_PUBLIC_LOCAL_API_URL,

@@ -14,9 +14,12 @@ import * as auth from '../../api/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { CommonActions } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 interface UserData {
   email: string;
+  name?: string;
+  birthday?: string;
   preferences?: {
     cuisines?: string[];
     diets?: string[];
@@ -26,8 +29,20 @@ interface UserData {
   };
 }
 
+type ProfileScreenNavigationProp = NativeStackNavigationProp<{
+  EditPreferences: {
+    currentPreferences: any;
+    onSave: (preferences: any) => void;
+  };
+  EditProfile: {
+    currentProfile: { name?: string; birthday?: string };
+    onSave: (profile: { name?: string; birthday?: string }) => void;
+  };
+  Landing: undefined;
+}>;
+
 const ProfileScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<ProfileScreenNavigationProp>();
   const [user, setUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'created' | 'saved'>('created');
@@ -87,8 +102,23 @@ const ProfileScreen = () => {
   };
 
   const handleEditProfile = () => {
-    // TODO: Navigate to edit profile screen or onboarding
-    Alert.alert('Coming Soon', 'Profile editing will be available soon!');
+    if (user?.preferences) {
+      navigation.navigate('EditPreferences', {
+        currentPreferences: user.preferences,
+        onSave: (updatedPreferences: any) => {
+          setUser(prev => prev ? { ...prev, preferences: updatedPreferences } : null);
+        }
+      });
+    }
+  };
+
+  const handleEditPersonalInfo = () => {
+    navigation.navigate('EditProfile', {
+      currentProfile: { name: user?.name, birthday: user?.birthday },
+      onSave: (updatedProfile: { name?: string; birthday?: string }) => {
+        setUser(prev => prev ? { ...prev, ...updatedProfile } : null);
+      }
+    });
   };
 
   const renderPreferenceChips = (items: string[] | undefined, title: string) => {
@@ -141,11 +171,14 @@ const ProfileScreen = () => {
           </View>
           
           <Text style={styles.userName}>
-            {user.email?.split('@')[0]?.replace(/[^a-zA-Z0-9]/g, '') || 'User'}
+            {user.name || user.email?.split('@')[0]?.replace(/[^a-zA-Z0-9]/g, '') || 'User'}
           </Text>
           <Text style={styles.userEmail}>@{user.email?.split('@')[0] || 'user'}</Text>
+          {user.birthday && (
+            <Text style={styles.userBirthday}>🎂 {user.birthday}</Text>
+          )}
           
-          <TouchableOpacity style={styles.editButton} onPress={handleEditProfile}>
+          <TouchableOpacity style={styles.editButton} onPress={() => handleEditPersonalInfo()}>
             <Text style={styles.editButtonText}>Edit profile</Text>
           </TouchableOpacity>
         </View>
@@ -176,7 +209,13 @@ const ProfileScreen = () => {
             {/* User Preferences Section */}
             {user.preferences && (
               <View style={styles.preferencesContainer}>
-                <Text style={styles.sectionTitle}>Your Food Preferences</Text>
+                <View style={styles.preferencesHeader}>
+                  <Text style={styles.sectionTitle}>Your Food Preferences</Text>
+                  <TouchableOpacity onPress={handleEditProfile} style={styles.editPreferencesButton}>
+                    <Ionicons name="pencil" size={16} color="#C84B31" />
+                    <Text style={styles.editPreferencesText}>Edit</Text>
+                  </TouchableOpacity>
+                </View>
                 
                 {renderPreferenceChips(user.preferences.cuisines, 'Favorite Cuisines')}
                 {renderPreferenceChips(user.preferences.diets, 'Dietary Preferences')}

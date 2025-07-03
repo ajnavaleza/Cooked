@@ -6,12 +6,14 @@ interface AuthResponse {
   token: string;
   user: {
     email: string;
+    name?: string;
+    birthday?: string;
     preferences: OnboardingAnswers;
   };
 }
 
-export const register = async (email: string, password: string): Promise<AuthResponse> => {
-  const res = await API.post('/auth/register', { email, password });
+export const register = async (email: string, password: string, name?: string, birthday?: string): Promise<AuthResponse> => {
+  const res = await API.post('/auth/register', { email, password, name, birthday });
   return res.data;
 };
 
@@ -33,5 +35,10 @@ export const getUser = async () => {
 
 export const updatePreferences = async (preferences: OnboardingAnswers) => {
   const res = await API.put('/user/me/preferences', { preferences });
+  return res.data;
+};
+
+export const updateProfile = async (name: string, birthday: string) => {
+  const res = await API.put('/user/me/profile', { name, birthday });
   return res.data;
 }; 

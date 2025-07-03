@@ -23,9 +23,6 @@ const LoginScreenLoading = () => {
     return () => clearTimeout(timer);
   }, [navigation]);
 
-  const handleBack = () => {
-    navigation.navigate('Login');
-  };
 
   return (
     <Screen style={styles.screen}>
@@ -35,12 +32,7 @@ const LoginScreenLoading = () => {
         resizeMode="cover"
       />
       <View style={styles.overlay} />
-      <TouchableOpacity 
-        style={styles.backButton} 
-        onPress={handleBack}
-      >
-        <Text style={styles.backButtonText}>← Back to Login</Text>
-      </TouchableOpacity>
+
       <View style={styles.container}>
         <Logo style={styles.logo} />
         <Text style={styles.welcomeText}>We are happy to</Text>

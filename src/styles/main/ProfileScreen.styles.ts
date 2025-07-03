@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { typography } from '../typography';
 
 export const styles = StyleSheet.create({
   container: {
@@ -21,6 +22,7 @@ export const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 16,
     color: '#666',
+    fontFamily: typography.fonts.regular,
   },
   
   // Error states
@@ -37,11 +39,13 @@ export const styles = StyleSheet.create({
     color: '#333',
     marginTop: 20,
     marginBottom: 10,
+    fontFamily: typography.fonts.bold,
   },
   errorText: {
     fontSize: 16,
     color: '#666',
     textAlign: 'center',
+    fontFamily: typography.fonts.regular,
   },
   
   // Profile Header
@@ -63,11 +67,19 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#8B4513',
     marginBottom: 5,
+    fontFamily: typography.fonts.bold,
   },
   userEmail: {
     fontSize: 16,
     color: '#A0522D',
+    marginBottom: 10,
+    fontFamily: typography.fonts.regular,
+  },
+  userBirthday: {
+    fontSize: 14,
+    color: '#A0522D',
     marginBottom: 20,
+    fontFamily: typography.fonts.regular,
   },
   editButton: {
     backgroundColor: 'rgba(200, 75, 49, 0.1)',
@@ -81,6 +93,7 @@ export const styles = StyleSheet.create({
     color: '#C84B31',
     fontSize: 14,
     fontWeight: '500',
+    fontFamily: typography.fonts.medium,
   },
   
   // Tabs
@@ -110,9 +123,11 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
     color: '#666',
+    fontFamily: typography.fonts.medium,
   },
   activeTabText: {
     color: '#FFF',
+    fontFamily: typography.fonts.medium,
   },
   
   // Tab Content
@@ -137,6 +152,30 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 20,
+    fontFamily: typography.fonts.bold,
+  },
+  preferencesHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  editPreferencesButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(200, 75, 49, 0.1)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: '#C84B31',
+  },
+  editPreferencesText: {
+    color: '#C84B31',
+    fontSize: 14,
+    fontWeight: '500',
+    marginLeft: 4,
+    fontFamily: typography.fonts.medium,
   },
   preferenceSection: {
     marginBottom: 20,
@@ -146,6 +185,7 @@ export const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#555',
     marginBottom: 10,
+    fontFamily: typography.fonts.semiBold,
   },
   chipContainer: {
     flexDirection: 'row',
@@ -164,6 +204,7 @@ export const styles = StyleSheet.create({
     color: '#8B4513',
     fontSize: 14,
     fontWeight: '500',
+    fontFamily: typography.fonts.medium,
   },
   otherAllergyText: {
     fontSize: 14,
@@ -174,6 +215,7 @@ export const styles = StyleSheet.create({
     borderRadius: 8,
     borderLeftWidth: 3,
     borderLeftColor: '#C84B31',
+    fontFamily: typography.fonts.regular,
   },
   
   // Empty State
@@ -188,12 +230,14 @@ export const styles = StyleSheet.create({
     color: '#333',
     marginTop: 15,
     marginBottom: 8,
+    fontFamily: typography.fonts.semiBold,
   },
   emptyStateText: {
     fontSize: 14,
     color: '#666',
     textAlign: 'center',
     lineHeight: 20,
+    fontFamily: typography.fonts.regular,
   },
   
   // Logout Button
@@ -219,5 +263,6 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     marginLeft: 8,
+    fontFamily: typography.fonts.semiBold,
   },
 }); 

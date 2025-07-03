@@ -1,4 +1,5 @@
 import { StyleSheet, Dimensions } from 'react-native';
+import { typography } from '../typography';
 
 const { width } = Dimensions.get('window');
 
@@ -17,6 +18,13 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FFF',
     marginBottom: 20,
+    fontFamily: typography.fonts.bold,
+  },
+  headerSubtitle: {
+    fontSize: 16,
+    color: '#FFF',
+    opacity: 0.9,
+    fontFamily: typography.fonts.regular,
   },
   searchContainer: {
     flexDirection: 'row',
@@ -33,6 +41,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     color: '#000',
+    fontFamily: typography.fonts.regular,
   },
   recipeOfDay: {
     padding: 20,
@@ -42,6 +51,7 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 15,
+    fontFamily: typography.fonts.bold,
   },
   recipeCard: {
     backgroundColor: '#C84B31',
@@ -61,6 +71,7 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FFF',
     marginBottom: 10,
+    fontFamily: typography.fonts.bold,
   },
   recipeMetrics: {
     flexDirection: 'row',
@@ -74,11 +85,13 @@ export const styles = StyleSheet.create({
   metricText: {
     color: '#FFF',
     marginLeft: 5,
+    fontFamily: typography.fonts.regular,
   },
   recipeDescription: {
     color: '#FFF',
     marginBottom: 15,
     lineHeight: 20,
+    fontFamily: typography.fonts.regular,
   },
   viewButton: {
     backgroundColor: '#FFF',
@@ -89,6 +102,7 @@ export const styles = StyleSheet.create({
   viewButtonText: {
     color: '#C84B31',
     fontWeight: 'bold',
+    fontFamily: typography.fonts.bold,
   },
   exploreSection: {
     padding: 20,
@@ -97,6 +111,7 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     color: '#666',
     marginBottom: 20,
+    fontFamily: typography.fonts.regular,
   },
   exploreCard: {
     flexDirection: 'row',
@@ -123,6 +138,7 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 5,
+    fontFamily: typography.fonts.bold,
   },
   exploreMetrics: {
     marginBottom: 5,
@@ -130,6 +146,7 @@ export const styles = StyleSheet.create({
   exploreMetric: {
     color: '#666',
     fontSize: 12,
+    fontFamily: typography.fonts.regular,
   },
   difficultyTag: {
     backgroundColor: '#E8F3E9',
@@ -141,6 +158,7 @@ export const styles = StyleSheet.create({
   difficultyText: {
     color: '#4CAF50',
     fontSize: 12,
+    fontFamily: typography.fonts.regular,
   },
   cuisineTag: {
     backgroundColor: '#FFE0B2',
@@ -153,6 +171,7 @@ export const styles = StyleSheet.create({
   cuisineText: {
     color: '#F57C00',
     fontSize: 12,
+    fontFamily: typography.fonts.regular,
   },
   seeAllButton: {
     padding: 15,
@@ -164,6 +183,7 @@ export const styles = StyleSheet.create({
   seeAllText: {
     color: '#FFF',
     fontWeight: 'bold',
+    fontFamily: typography.fonts.bold,
   },
   newsletterSection: {
     backgroundColor: '#C84B31',
@@ -174,10 +194,12 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FFF',
     marginBottom: 10,
+    fontFamily: typography.fonts.bold,
   },
   newsletterSubtitle: {
     color: '#FFF',
     marginBottom: 20,
+    fontFamily: typography.fonts.regular,
   },
   newsletterInput: {
     flexDirection: 'row',
@@ -189,6 +211,7 @@ export const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 8,
     marginRight: 10,
+    fontFamily: typography.fonts.regular,
   },
   joinButton: {
     backgroundColor: '#FFF',
@@ -199,6 +222,7 @@ export const styles = StyleSheet.create({
   joinButtonText: {
     color: '#C84B31',
     fontWeight: 'bold',
+    fontFamily: typography.fonts.bold,
   },
   contactSection: {
     padding: 20,
@@ -209,11 +233,13 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FFF',
     marginBottom: 10,
+    fontFamily: typography.fonts.bold,
   },
   contactSubtitle: {
     color: '#FFF',
     marginBottom: 20,
     lineHeight: 20,
+    fontFamily: typography.fonts.regular,
   },
   contactButton: {
     backgroundColor: '#FFF',
@@ -225,6 +251,7 @@ export const styles = StyleSheet.create({
     color: '#C84B31',
     fontWeight: 'bold',
     fontSize: 16,
+    fontFamily: typography.fonts.bold,
   },
   socialLinks: {
     flexDirection: 'row',
@@ -242,9 +269,32 @@ export const styles = StyleSheet.create({
   footerLink: {
     color: '#FFF',
     marginHorizontal: 5,
+    fontFamily: typography.fonts.regular,
   },
   footerDivider: {
     color: '#FFF',
     marginHorizontal: 5,
+    fontFamily: typography.fonts.regular,
+  },
+  section: {
+    margin: 20,
+    marginTop: 10,
+  },
+  placeholder: {
+    backgroundColor: '#fff',
+    padding: 40,
+    borderRadius: 12,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  placeholderText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#666',
+    fontFamily: typography.fonts.regular,
   },
 }); 

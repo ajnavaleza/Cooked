@@ -12,9 +12,8 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { styles } from '../../styles/auth/LoginScreen.styles';
-import Screen from '../../components/Screen';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigation/AppNavigator';
@@ -38,7 +37,7 @@ const LoginScreen = () => {
     try {
       const response = await auth.login(email, password);
       if (response.token) {
-        navigation.replace('MainApp');
+        navigation.navigate('LoginLoading');
       } else {
         Alert.alert('Error', 'Invalid login credentials');
       }
