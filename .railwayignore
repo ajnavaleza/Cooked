@@ -1,0 +1,21 @@
+# Ignore frontend React Native files
+src/
+assets/
+App.tsx
+index.ts
+app.config.js
+package.json
+package-lock.json
+tsconfig.json
+babel.config.js
+metro.config.js
+*.expo
+.expo/
+
+# Ignore everything except backend
+*
+!cooked-backend/
+!cooked-backend/**
+!nixpacks.toml
+!railway.json
+!.railwayignore 
