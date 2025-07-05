@@ -1,6 +1,6 @@
 import { StyleSheet, Dimensions, StatusBar, Platform } from 'react-native';
 import { sharedStyles } from './shared.styles';
-import { typography } from '../../styles/typography';
+import { typography } from '../typography';
 
 const { width, height } = Dimensions.get('window');
 const STATUS_BAR_HEIGHT = Platform.OS === 'android' ? StatusBar.currentHeight || 0 : 0;
@@ -36,10 +36,16 @@ export const styles = StyleSheet.create({
   },
   heroTitle: {
     fontSize: 32,
-    fontFamily: typography.fonts.semiBold,
     color: '#fff',
     textAlign: 'center',
     marginBottom: 20,
+    fontFamily: typography.fonts.bold,
+  },
+  headerSubtitle: {
+    fontSize: 16,
+    color: '#FFF',
+    opacity: 0.9,
+    fontFamily: typography.fonts.regular,
   },
   searchContainer: {
     flexDirection: 'row',
@@ -55,8 +61,8 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 12,
     fontSize: 16,
-    fontFamily: typography.fontFamily,
     color: '#333',
+    fontFamily: typography.fonts.regular,
   },
   searchButton: {
     backgroundColor: '#C84B31',
@@ -75,9 +81,9 @@ export const styles = StyleSheet.create({
   },
   sectionSubtitle: {
     fontSize: 16,
-    fontFamily: typography.fontFamily,
     color: '#666',
     marginBottom: 20,
+    fontFamily: typography.fonts.regular,
   },
   recipeOfTheDay: {
     ...sharedStyles.card,
@@ -91,22 +97,22 @@ export const styles = StyleSheet.create({
   },
   recipeOfTheDayLabel: {
     fontSize: 14,
-    fontFamily: typography.fonts.semiBold,
     color: '#C84B31',
     marginBottom: 8,
+    fontFamily: typography.fonts.semiBold,
   },
   recipeOfTheDayTitle: {
     fontSize: 24,
-    fontFamily: typography.fonts.semiBold,
     color: '#333',
-    marginBottom: 12,
+    marginBottom: 15,
+    fontFamily: typography.fonts.bold,
   },
   recipeOfTheDayDescription: {
     fontSize: 16,
-    fontFamily: typography.fontFamily,
     color: '#666',
     marginVertical: 12,
     lineHeight: 24,
+    fontFamily: typography.fonts.regular,
   },
   viewRecipeButton: {
     ...sharedStyles.primaryButton,
@@ -131,9 +137,9 @@ export const styles = StyleSheet.create({
   },
   recipeTitle: {
     fontSize: 18,
-    fontFamily: typography.fonts.semiBold,
     color: '#333',
     marginBottom: 8,
+    fontFamily: typography.fonts.semiBold,
   },
   recipeMetrics: {
     flexDirection: 'row',
@@ -152,8 +158,8 @@ export const styles = StyleSheet.create({
     borderRadius: 4,
   },
   difficultyText: {
-    color: '#fff',
     fontSize: 12,
-    fontFamily: typography.fonts.semiBold,
+    color: '#FFF',
+    fontFamily: typography.fonts.medium,
   },
 }); 

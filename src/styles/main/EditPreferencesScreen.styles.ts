@@ -8,12 +8,12 @@ export const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 15,
     borderBottomWidth: 1,
-    borderBottomColor: '#EEEEEE',
+    borderBottomColor: '#E0E0E0',
   },
   backButton: {
     padding: 8,
@@ -25,9 +25,8 @@ export const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontWeight: '600',
-    color: '#2B2B2B',
-    fontFamily: typography.fonts.semiBold,
+    color: '#333',
+    fontFamily: typography.fonts.bold,
   },
   saveButton: {
     padding: 8,
@@ -35,22 +34,21 @@ export const styles = StyleSheet.create({
   saveButtonText: {
     fontSize: 16,
     color: '#C84B31',
-    fontWeight: '600',
-    fontFamily: typography.fonts.semiBold,
+    fontFamily: typography.fonts.bold,
   },
   tabsContainer: {
     flexDirection: 'row',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#EEEEEE',
+    backgroundColor: '#F5F5F5',
+    marginHorizontal: 20,
+    marginVertical: 10,
+    borderRadius: 8,
+    padding: 2,
   },
   tabButton: {
     flex: 1,
-    paddingVertical: 8,
+    paddingVertical: 12,
     alignItems: 'center',
-    marginHorizontal: 4,
-    borderRadius: 8,
+    borderRadius: 6,
   },
   activeTabButton: {
     backgroundColor: '#C84B31',
@@ -58,7 +56,6 @@ export const styles = StyleSheet.create({
   tabText: {
     fontSize: 14,
     color: '#666666',
-    fontWeight: '500',
     fontFamily: typography.fonts.medium,
   },
   activeTabText: {
@@ -72,17 +69,19 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 8,
+    paddingHorizontal: 15,
     marginBottom: 8,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#F8F8F8',
+    borderRadius: 8,
   },
   selectedOption: {
-    backgroundColor: '#F8E2DD',
+    backgroundColor: '#E8F3E9',
+    borderWidth: 2,
+    borderColor: '#C84B31',
   },
   optionText: {
     fontSize: 16,
-    color: '#2B2B2B',
+    color: '#333',
     fontFamily: typography.fonts.regular,
   },
   otherInput: {
@@ -95,7 +94,7 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#DDDDDD',
     fontSize: 16,
-    color: '#2B2B2B',
+    color: '#333',
     fontFamily: typography.fonts.regular,
   },
 }); 

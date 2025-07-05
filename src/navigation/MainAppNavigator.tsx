@@ -12,36 +12,10 @@ const ExploreScreen = React.lazy(() => import('../screens/main/ExploreScreen'));
 const RecipesScreen = React.lazy(() => import('../screens/main/RecipesScreen'));
 const ProfileScreen = React.lazy(() => import('../screens/main/ProfileScreen'));
 const EditPreferencesScreen = React.lazy(() => import('../screens/main/EditPreferencesScreen'));
+const EditProfileScreen = React.lazy(() => import('../screens/main/EditProfileScreen'));
 
 const Tab = createBottomTabNavigator();
 const ProfileStack = createNativeStackNavigator<ProfileStackParamList>();
-
-// Custom tab bar icon component
-interface TabBarIconProps {
-  focused: boolean;
-  icon: keyof typeof Ionicons.glyphMap;
-  label: string;
-}
-
-const TabBarIcon: React.FC<TabBarIconProps> = ({ focused, icon, label }) => (
-  <View style={styles.tabBarItem}>
-    <Ionicons
-      name={icon}
-      size={28}
-      color={focused ? '#FFFFFF' : 'rgba(255, 255, 255, 0.8)'}
-      style={styles.tabBarIcon}
-    />
-    <Text 
-      style={[
-        styles.tabBarLabel,
-        { color: focused ? '#FFFFFF' : 'rgba(255, 255, 255, 0.8)' }
-      ]}
-      numberOfLines={1}
-    >
-      {label}
-    </Text>
-  </View>
-);
 
 // Loading component for lazy loaded screens
 const LoadingScreen = () => (
@@ -83,6 +57,14 @@ const ProfileStackNavigator = () => (
         contentStyle: { backgroundColor: '#FFFFFF' },
       }}
     />
+    <ProfileStack.Screen
+      name="EditProfile"
+      children={(props) => <LazyScreen component={EditProfileScreen} {...props} />}
+      options={{
+        gestureEnabled: false,
+        contentStyle: { backgroundColor: '#FFFFFF' },
+      }}
+    />
   </ProfileStack.Navigator>
 );
 
@@ -94,12 +76,20 @@ const MainAppNavigator = () => {
           backgroundColor: '#C84B31',
           borderTopWidth: 0,
           elevation: 0,
-          height: 90,
-          paddingBottom: 12,
-          paddingTop: 20,
+          shadowOpacity: 0,
+          height: Platform.OS === 'ios' ? 95 : 90,
+          paddingBottom: Platform.OS === 'ios' ? 30 : 25,
+          paddingTop: 10,
+          marginBottom: 0,
         },
         tabBarActiveTintColor: '#FFFFFF',
-        tabBarInactiveTintColor: 'rgba(255, 255, 255, 0.8)',
+        tabBarInactiveTintColor: 'rgba(255, 255, 255, 0.7)',
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: '500',
+          marginTop: 5,
+          fontFamily: typography.fonts.medium,
+        },
         headerShown: false,
       }}
     >
@@ -107,8 +97,8 @@ const MainAppNavigator = () => {
         name="Home"
         children={(props) => <LazyScreen component={HomeScreen} {...props} />}
         options={{
-          tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} icon="home-outline" label="Home" />
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons name={focused ? "home" : "home-outline"} size={size} color={color} />
           ),
           tabBarLabel: () => null,
         }}
@@ -117,8 +107,8 @@ const MainAppNavigator = () => {
         name="Explore"
         children={(props) => <LazyScreen component={ExploreScreen} {...props} />}
         options={{
-          tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} icon="grid-outline" label="Explore" />
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons name={focused ? "grid" : "grid-outline"} size={size} color={color} />
           ),
           tabBarLabel: () => null,
         }}
@@ -127,8 +117,8 @@ const MainAppNavigator = () => {
         name="Recipes"
         children={(props) => <LazyScreen component={RecipesScreen} {...props} />}
         options={{
-          tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} icon="book-outline" label="Recipes" />
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons name={focused ? "book" : "book-outline"} size={size} color={color} />
           ),
           tabBarLabel: () => null,
         }}
@@ -137,8 +127,8 @@ const MainAppNavigator = () => {
         name="Profile"
         component={ProfileStackNavigator}
         options={{
-          tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} icon="person-outline" label="Profile" />
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons name={focused ? "person" : "person-outline"} size={size} color={color} />
           ),
           tabBarLabel: () => null,
         }}
@@ -152,26 +142,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f8f9fa',
   },
   loadingText: {
     marginTop: 10,
     fontSize: 16,
     color: '#666',
-  },
-  tabBarItem: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 56,
-    width: 70,
-  },
-  tabBarIcon: {
-    marginBottom: 6,
-  },
-  tabBarLabel: {
-    fontSize: 14,
-    fontFamily: typography.fonts.semiBold,
-    textAlign: 'center',
+    fontFamily: typography.fonts.regular,
   },
 });
 

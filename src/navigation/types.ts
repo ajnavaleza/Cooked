@@ -1,8 +1,26 @@
 import type { OnboardingStackParamList } from '../screens/onboarding/OnboardingNavigator';
 
+interface UserPreferences {
+  cuisines?: string[];
+  diets?: string[];
+  allergies?: string[];
+  recipeTypes?: string[];
+  allergyOther?: string;
+}
+
 export type ProfileStackParamList = {
   ProfileMain: undefined;
-  EditPreferences: undefined;
+  EditPreferences: {
+    currentPreferences: UserPreferences;
+    onSave: (preferences: UserPreferences) => void;
+  };
+  EditProfile: {
+    currentProfile: {
+      name?: string;
+      birthday?: string;
+    };
+    onSave: (profile: { name?: string; birthday?: string }) => void;
+  };
 };
 
 export type RootStackParamList = {
@@ -10,9 +28,6 @@ export type RootStackParamList = {
   Login: undefined;
   CreateAccount: undefined;
   LoginLoading: undefined;
-  Onboarding: { screen?: keyof OnboardingStackParamList } | undefined;
-  MainApp: {
-    screen?: string;
-    params?: any;
-  } | undefined;
+  Main: undefined;
+  Onboarding: undefined;
 }; 

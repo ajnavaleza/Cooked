@@ -20,15 +20,10 @@ import type { ProfileStackParamList, RootStackParamList } from '../../navigation
 type ProfileScreenNavigationProp = NativeStackNavigationProp<ProfileStackParamList, 'ProfileMain'>;
 type RootNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
-type OnboardingNavigationParams = {
-  screen: string;
-  params: {
-    isEditing: boolean;
-  };
-};
-
 interface UserData {
   email: string;
+  name?: string;
+  birthday?: string;
   preferences?: {
     cuisines?: string[];
     diets?: string[];
@@ -109,9 +104,23 @@ const ProfileScreen = () => {
   };
 
   const handleEditProfile = () => {
-    // TODO: Implement profile picture upload functionality
-    // TODO: Add form validation for profile edits
-    navigation.navigate('EditPreferences');
+    if (user?.preferences) {
+      navigation.navigate('EditPreferences', {
+        currentPreferences: user.preferences,
+        onSave: (updatedPreferences: UserData['preferences']) => {
+          setUser(prev => prev ? { ...prev, preferences: updatedPreferences } : null);
+        }
+      });
+    }
+  };
+
+  const handleEditPersonalInfo = () => {
+    navigation.navigate('EditProfile', {
+      currentProfile: { name: user?.name, birthday: user?.birthday },
+      onSave: (updatedProfile: { name?: string; birthday?: string }) => {
+        setUser(prev => prev ? { ...prev, ...updatedProfile } : null);
+      }
+    });
   };
 
   const renderPreferenceChips = (items: string[] | undefined, title: string) => {
@@ -162,21 +171,28 @@ const ProfileScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.scrollContent}>
         {/* Profile Header */}
         <View style={styles.profileHeader}>
           <View style={styles.avatarContainer}>
             <Ionicons name="person-circle" size={100} color="#C84B31" />
           </View>
           
-          <Text style={styles.userName}>
-            {user.email?.split('@')[0]?.replace(/[^a-zA-Z0-9]/g, '') || 'User'}
-          </Text>
-          <Text style={styles.userEmail}>{user.email}</Text>
-          
-          <TouchableOpacity style={styles.editButton} onPress={handleEditProfile}>
-            <Text style={styles.editButtonText}>Edit profile</Text>
-          </TouchableOpacity>
+          {user && (
+            <>
+              <Text style={styles.userName}>
+                {user.name || user.email?.split('@')[0]?.replace(/[^a-zA-Z0-9]/g, '') || 'User'}
+              </Text>
+              <Text style={styles.userEmail}>@{user.email?.split('@')[0] || 'user'}</Text>
+              {user.birthday && (
+                <Text style={styles.userBirthday}>🎂 {user.birthday}</Text>
+              )}
+              
+              <TouchableOpacity style={styles.editButton} onPress={handleEditPersonalInfo}>
+                <Text style={styles.editButtonText}>Edit profile</Text>
+              </TouchableOpacity>
+            </>
+          )}
         </View>
 
         {/* Tabs */}
@@ -207,7 +223,13 @@ const ProfileScreen = () => {
             {/* User Preferences Section */}
             {user.preferences && (
               <View style={styles.preferencesContainer}>
-                <Text style={styles.sectionTitle}>Your Food Preferences</Text>
+                <View style={styles.preferencesHeader}>
+                  <Text style={styles.sectionTitle}>Your Food Preferences</Text>
+                  <TouchableOpacity onPress={handleEditProfile} style={styles.editPreferencesButton}>
+                    <Ionicons name="pencil" size={16} color="#C84B31" />
+                    <Text style={styles.editPreferencesText}>Edit</Text>
+                  </TouchableOpacity>
+                </View>
                 
                 {renderPreferenceChips(user.preferences.cuisines, 'Favorite Cuisines')}
                 {renderPreferenceChips(user.preferences.diets, 'Dietary Preferences')}

@@ -10,11 +10,13 @@ import {
   SafeAreaView,
   BackHandler,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { ProfileStackParamList } from '../../navigation/types';
 import * as auth from '../../api/auth';
 import { styles } from '../../styles/main/EditPreferencesScreen.styles';
+import { OnboardingAnswers } from '../onboarding/OnboardingContext';
 
 type EditPreferencesScreenNavigationProp = NativeStackNavigationProp<ProfileStackParamList, 'EditPreferences'>;
 

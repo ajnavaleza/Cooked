@@ -53,7 +53,6 @@ const HomeScreen = () => {
 
   const handleSearch = () => {
     // TODO: Implement search functionality to filter recipes based on searchQuery
-    // Should integrate with backend API for recipe search
     
   };
 

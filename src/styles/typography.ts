@@ -9,7 +9,7 @@ export const typography = {
   fonts: {
     regular: 'Obviously Narrow Medium',
     medium: 'Obviously Narrow Medium',
-    semiBold: 'Obviously Narrow Medium',
-    bold: 'Obviously Narrow Medium',
+    semiBold: 'Obviously Narrow Semibold',
+    bold: 'Obviously Narrow Semibold',
   }
 }; 

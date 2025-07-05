@@ -7,12 +7,14 @@ interface AuthResponse {
   token: string;
   user: {
     email: string;
+    name?: string;
+    birthday?: string;
     preferences: OnboardingAnswers;
   };
 }
 
-export const register = async (email: string, password: string): Promise<AuthResponse> => {
-  const res = await API.post('/auth/register', { email, password });
+export const register = async (email: string, password: string, name?: string, birthday?: string): Promise<AuthResponse> => {
+  const res = await API.post('/auth/register', { email, password, name, birthday });
   return res.data;
 };
 
@@ -56,7 +58,6 @@ export const updateUser = async (updates: { preferences?: any }) => {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Server response:', errorText);
       try {
         const errorData = JSON.parse(errorText);
         throw new Error(errorData.error || 'Failed to update user');
@@ -68,7 +69,11 @@ export const updateUser = async (updates: { preferences?: any }) => {
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error('Error updating user:', error);
     throw error;
   }
+};
+
+export const updateProfile = async (name: string, birthday: string) => {
+  const res = await API.put('/user/me/profile', { name, birthday });
+  return res.data;
 }; 

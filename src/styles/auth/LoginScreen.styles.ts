@@ -34,6 +34,7 @@ export const styles = StyleSheet.create({
   backButton: {
     fontSize: 16,
     color: authColors.text.light.primary,
+    fontFamily: typography.fonts.regular,
   },
   content: {
     width: '100%',
@@ -47,6 +48,7 @@ export const styles = StyleSheet.create({
     color: authColors.text.light.primary,
     marginBottom: 60,
     textAlign: 'center',
+    fontFamily: typography.fonts.bold,
   },
   subtitle: {
     fontSize: 16,
@@ -65,8 +67,13 @@ export const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     borderWidth: 2,
     borderColor: authColors.text.light.primary,
+    borderRadius: 8,
+    padding: 15,
+    marginBottom: 15,
+    fontSize: 16,
     color: authColors.text.light.primary,
-    marginBottom: 16,
+    width: '100%',
+    fontFamily: typography.fonts.regular,
   },
   forgotPasswordContainer: {
     flexDirection: 'row',
@@ -79,10 +86,12 @@ export const styles = StyleSheet.create({
   forgotPasswordText: {
     color: authColors.text.light.primary,
     fontSize: 14,
+    fontFamily: typography.fonts.regular,
   },
   newUserText: {
     color: authColors.text.light.primary,
     fontSize: 14,
+    fontFamily: typography.fonts.regular,
   },
   loginButton: {
     ...sharedStyles.button,
@@ -92,6 +101,9 @@ export const styles = StyleSheet.create({
   loginButtonText: {
     ...sharedStyles.buttonText,
     color: authColors.white,
+    fontSize: 18,
+    fontWeight: 'bold',
+    fontFamily: typography.fonts.bold,
   },
   dividerContainer: {
     ...sharedStyles.dividerContainer,
@@ -104,6 +116,8 @@ export const styles = StyleSheet.create({
   dividerText: {
     ...sharedStyles.dividerText,
     color: authColors.text.light.secondary,
+    paddingHorizontal: 10,
+    fontFamily: typography.fonts.regular,
   },
   socialButtons: {
     ...sharedStyles.socialContainer,
@@ -146,5 +160,6 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 30,
     lineHeight: 16,
+    fontFamily: typography.fonts.regular,
   },
 }); 
