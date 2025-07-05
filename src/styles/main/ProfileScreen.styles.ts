@@ -1,47 +1,13 @@
 import { StyleSheet } from 'react-native';
+import { sharedStyles } from './shared.styles';
+import { typography } from '../../styles/typography';
 
 export const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5F5F5',
-  },
+  ...sharedStyles,
+  
   scrollContainer: {
     flexGrow: 1,
     paddingBottom: 20,
-  },
-  
-  // Loading states
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5F5F5',
-  },
-  loadingText: {
-    marginTop: 10,
-    fontSize: 16,
-    color: '#666',
-  },
-  
-  // Error states
-  errorContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5F5F5',
-    padding: 20,
-  },
-  errorTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-    marginTop: 20,
-    marginBottom: 10,
-  },
-  errorText: {
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
   },
   
   // Profile Header
@@ -60,7 +26,7 @@ export const styles = StyleSheet.create({
   },
   userName: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontFamily: typography.fonts.semiBold,
     color: '#8B4513',
     marginBottom: 5,
   },
@@ -68,6 +34,7 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     color: '#A0522D',
     marginBottom: 20,
+    fontFamily: typography.fontFamily,
   },
   editButton: {
     backgroundColor: 'rgba(200, 75, 49, 0.1)',
@@ -80,7 +47,7 @@ export const styles = StyleSheet.create({
   editButtonText: {
     color: '#C84B31',
     fontSize: 14,
-    fontWeight: '500',
+    fontFamily: typography.fontFamily,
   },
   
   // Tabs
@@ -108,7 +75,7 @@ export const styles = StyleSheet.create({
   },
   tabText: {
     fontSize: 16,
-    fontWeight: '500',
+    fontFamily: typography.fontFamily,
     color: '#666',
   },
   activeTabText: {
@@ -122,20 +89,7 @@ export const styles = StyleSheet.create({
   
   // Preferences Section
   preferencesContainer: {
-    backgroundColor: '#FFF',
-    borderRadius: 15,
-    padding: 20,
-    marginBottom: 20,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
+    ...sharedStyles.card,
     marginBottom: 20,
   },
   preferenceSection: {
@@ -143,7 +97,7 @@ export const styles = StyleSheet.create({
   },
   preferenceTitle: {
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: typography.fonts.semiBold,
     color: '#555',
     marginBottom: 10,
   },
@@ -151,19 +105,6 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 8,
-  },
-  chip: {
-    backgroundColor: '#F0E6D2',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 15,
-    borderWidth: 1,
-    borderColor: '#C84B31',
-  },
-  chipText: {
-    color: '#8B4513',
-    fontSize: 14,
-    fontWeight: '500',
   },
   otherAllergyText: {
     fontSize: 14,
@@ -174,50 +115,42 @@ export const styles = StyleSheet.create({
     borderRadius: 8,
     borderLeftWidth: 3,
     borderLeftColor: '#C84B31',
+    fontFamily: typography.fontFamily,
   },
   
-  // Empty State
-  emptyState: {
+  // Error Container
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 40,
-    paddingHorizontal: 20,
+    padding: 20,
   },
-  emptyStateTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+  errorTitle: {
+    fontSize: 24,
+    fontFamily: typography.fonts.semiBold,
     color: '#333',
-    marginTop: 15,
-    marginBottom: 8,
+    marginTop: 20,
+    marginBottom: 10,
   },
-  emptyStateText: {
-    fontSize: 14,
+  errorText: {
+    fontSize: 16,
     color: '#666',
     textAlign: 'center',
-    lineHeight: 20,
+    marginBottom: 20,
+    fontFamily: typography.fontFamily,
   },
   
   // Logout Button
   logoutButton: {
+    ...sharedStyles.secondaryButton,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#FFF',
     marginHorizontal: 20,
     marginTop: 20,
-    paddingVertical: 15,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#C84B31',
-    elevation: 1,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
   },
   logoutText: {
-    color: '#C84B31',
-    fontSize: 16,
-    fontWeight: '600',
+    ...sharedStyles.secondaryButtonText,
     marginLeft: 8,
   },
 }); 

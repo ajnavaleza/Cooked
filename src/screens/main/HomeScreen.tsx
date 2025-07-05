@@ -5,133 +5,146 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
+  SafeAreaView,
+  ImageBackground,
+  Image,
+  ImageSourcePropType,
+  StatusBar,
+  Platform,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { styles } from '../../styles/main/HomeScreen.styles';
+
+interface RecipeCardProps {
+  title: string;
+  image: ImageSourcePropType;
+  servingSize: string;
+  minutes: string;
+  difficulty?: string;
+  onPress: () => void;
+}
+
+const RecipeCard: React.FC<RecipeCardProps> = ({ title, image, servingSize, minutes, difficulty = '', onPress }) => (
+  <TouchableOpacity style={styles.recipeCard} onPress={onPress}>
+    <Image source={image} style={styles.recipeImage} />
+    <View style={styles.recipeInfo}>
+      <Text style={styles.recipeTitle}>{title}</Text>
+      <View style={styles.recipeMetrics}>
+        <View style={styles.metricItem}>
+          <MaterialIcons name="people" size={16} color="#666" />
+          <Text style={styles.metricText}>{servingSize}</Text>
+        </View>
+        <View style={styles.metricItem}>
+          <MaterialIcons name="schedule" size={16} color="#666" />
+          <Text style={styles.metricText}>{minutes}</Text>
+        </View>
+        {difficulty && (
+          <View style={[styles.difficultyBadge, { backgroundColor: difficulty === 'Easy' ? '#4CAF50' : '#FF9800' }]}>
+            <Text style={styles.difficultyText}>{difficulty}</Text>
+          </View>
+        )}
+      </View>
+    </View>
+  </TouchableOpacity>
+);
 
 const HomeScreen = () => {
   const [searchQuery, setSearchQuery] = React.useState('');
 
   const handleSearch = () => {
-    // TODO: Implement search functionality
-    console.log('Search:', searchQuery);
+    // TODO: Implement search functionality to filter recipes based on searchQuery
+    // Should integrate with backend API for recipe search
+    
   };
 
   return (
-    <ScrollView style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Good day!</Text>
-        <Text style={styles.headerSubtitle}>What would you like to cook today?</Text>
-      </View>
+    <View style={styles.container}>
+      <StatusBar 
+        translucent 
+        backgroundColor="transparent" 
+        barStyle="light-content"
+      />
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+        {/* Hero Section with Background */}
+        <ImageBackground
+          source={require('../../assets/main-page/main-page-bg.jpg')}
+          style={styles.hero}
+          resizeMode="cover"
+        >
+          <View style={styles.heroContent}>
+            <Text style={styles.heroTitle}>Simple recipes{'\n'}for students</Text>
+            <View style={styles.searchContainer}>
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Explore recipes..."
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+                onSubmitEditing={handleSearch}
+                returnKeyType="search"
+                placeholderTextColor="#999"
+              />
+              <TouchableOpacity onPress={handleSearch} style={styles.searchButton}>
+                <Ionicons name="search" size={20} color="#fff" />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.scrollIndicator}>
+              <MaterialIcons name="keyboard-arrow-down" size={32} color="#fff" />
+            </View>
+          </View>
+        </ImageBackground>
 
-      {/* Search Bar */}
-        <View style={styles.searchContainer}>
-        <Ionicons name="search" size={20} color="#999" style={styles.searchIcon} />
-          <TextInput
-            style={styles.searchInput}
-          placeholder="Search recipes..."
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            onSubmitEditing={handleSearch}
-            returnKeyType="search"
+        {/* Recipe of the Day */}
+        <View style={styles.section}>
+          <View style={styles.recipeOfTheDay}>
+            <Image
+              source={{ uri: 'https://placehold.co/400x300/orange/white.png' }}
+              style={styles.recipeOfTheDayImage}
+            />
+            <View style={styles.recipeOfTheDayContent}>
+              <Text style={styles.recipeOfTheDayLabel}>RECIPE OF THE DAY</Text>
+              <Text style={styles.recipeOfTheDayTitle}>Hawaiian Chicken Pizza</Text>
+              <View style={styles.recipeMetrics}>
+                <View style={styles.metricItem}>
+                  <MaterialIcons name="people" size={16} color="#666" />
+                  <Text style={styles.metricText}>6</Text>
+                </View>
+                <View style={styles.metricItem}>
+                  <MaterialIcons name="schedule" size={16} color="#666" />
+                  <Text style={styles.metricText}>55</Text>
+                </View>
+                <View style={[styles.difficultyBadge, { backgroundColor: '#FF9800' }]}>
+                  <Text style={styles.difficultyText}>Advanced</Text>
+                </View>
+              </View>
+              <Text style={styles.recipeOfTheDayDescription}>
+                A sweet and savory pizza topped with chicken, pineapple, melted mozzarella, onions, and cilantro all on a crispy golden crust!
+              </Text>
+              <TouchableOpacity style={styles.viewRecipeButton}>
+                {/* TODO: Implement navigation to recipe details screen */}
+                <Text style={styles.viewRecipeButtonText}>View recipe</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+
+        {/* Explore Recipes */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Explore Recipes</Text>
+          <Text style={styles.sectionSubtitle}>Simple Recipes for Students</Text>
+          <RecipeCard
+            title="Peanut Butter Banana Pancake Wrap"
+            image={{ uri: 'https://placehold.co/400x300/white/gray.png' }}
+            servingSize="6"
+            minutes="45"
+            difficulty="Easy"
+            // TODO: Implement navigation to recipe details screen with recipe ID
+            onPress={() => {}}
           />
-      </View>
-
-      {/* Recipe of the Day Placeholder */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Recipe of the Day</Text>
-        <View style={styles.placeholder}>
-          <Ionicons name="restaurant-outline" size={40} color="#ccc" />
-          <Text style={styles.placeholderText}>Coming soon...</Text>
+          {/* TODO: Implement recipe card list with data from backend API */}
         </View>
-      </View>
-
-      {/* Explore Recipes Placeholder */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Explore Recipes</Text>
-        <View style={styles.placeholder}>
-          <Ionicons name="grid-outline" size={40} color="#ccc" />
-          <Text style={styles.placeholderText}>Loading recipes...</Text>
-        </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f8f9fa',
-  },
-  header: {
-    backgroundColor: '#C84B31',
-    padding: 20,
-    paddingTop: 60,
-    paddingBottom: 30,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 5,
-  },
-  headerSubtitle: {
-    fontSize: 16,
-    color: '#fff',
-    opacity: 0.9,
-  },
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    margin: 20,
-    marginTop: 30,
-    paddingHorizontal: 15,
-    paddingVertical: 12,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  searchIcon: {
-    marginRight: 10,
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: 16,
-    color: '#333',
-  },
-  section: {
-    margin: 20,
-    marginTop: 10,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 15,
-  },
-  placeholder: {
-    backgroundColor: '#fff',
-    padding: 40,
-    borderRadius: 12,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  placeholderText: {
-    marginTop: 10,
-    fontSize: 16,
-    color: '#666',
-  },
-});
 
 export default HomeScreen; 

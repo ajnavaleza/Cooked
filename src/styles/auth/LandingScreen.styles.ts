@@ -1,35 +1,16 @@
-import { StyleSheet, Dimensions } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { typography } from '../typography';
-
-const { width, height } = Dimensions.get('window');
-
-// Colors specific to landing screen
-const colors = {
-  primary: '#4A3531', // Brown color
-  white: '#FFFFFF',
-  overlay: 'rgba(243, 215, 125, 0.9)', // Yellow overlay
-};
+import { sharedStyles, authColors } from './shared.styles';
 
 export const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-  },
-  background: {
-    position: 'absolute',
-    width: width,
-    height: height,
-    left: 0,
-    top: 0,
-  },
+  ...sharedStyles,
   overlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: colors.overlay,
+    ...sharedStyles.overlay,
+    backgroundColor: authColors.overlays.yellow,
   },
   container: {
-    flex: 1,
-    alignItems: 'center',
+    ...sharedStyles.container,
     justifyContent: 'space-between',
-    paddingHorizontal: 24,
     paddingTop: '40%',
     paddingBottom: '10%',
     zIndex: 1,
@@ -43,7 +24,7 @@ export const styles = StyleSheet.create({
     marginTop: -25,
     fontSize: 90,
     fontFamily: 'Obviously Narrow Semibold',
-    color: colors.primary,
+    color: authColors.primary,
   },
   logo: {
     width: 105,
@@ -55,29 +36,21 @@ export const styles = StyleSheet.create({
     gap: 16,
   },
   loginButton: {
-    backgroundColor: colors.primary,
-    borderRadius: 8,
-    padding: 16,
-    width: '100%',
-    alignItems: 'center',
+    ...sharedStyles.button,
+    backgroundColor: authColors.primary,
   },
   loginButtonText: {
-    color: colors.white,
-    fontSize: typography.sizes.lg,
-    fontFamily: typography.fonts.semiBold,
+    ...sharedStyles.buttonText,
+    color: authColors.white,
   },
   signUpButton: {
+    ...sharedStyles.button,
     backgroundColor: 'transparent',
-    borderRadius: 8,
-    padding: 16,
-    width: '100%',
-    alignItems: 'center',
     borderWidth: 1,
-    borderColor: colors.primary,
+    borderColor: authColors.primary,
   },
   signUpButtonText: {
-    color: colors.primary,
-    fontSize: typography.sizes.lg,
-    fontFamily: typography.fonts.semiBold,
+    ...sharedStyles.buttonText,
+    color: authColors.primary,
   },
 });

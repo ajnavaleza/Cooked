@@ -17,7 +17,10 @@ export type RootStackParamList = {
   CreateAccount: undefined;
   LoginLoading: undefined;
   Onboarding: { screen?: keyof OnboardingStackParamList } | undefined;
-  MainApp: undefined;
+  MainApp: {
+    screen?: string;
+    params?: any;
+  } | undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -31,6 +34,7 @@ const screenOptions: NativeStackNavigationOptions = {
   gestureDirection: 'horizontal',
   fullScreenGestureEnabled: true,
   animationDuration: 400,
+  contentStyle: { backgroundColor: '#FFFFFF' },
 };
 
 const fadeScreenOptions: NativeStackNavigationOptions = {
@@ -39,6 +43,15 @@ const fadeScreenOptions: NativeStackNavigationOptions = {
   presentation: 'transparentModal',
   gestureEnabled: false,
   animationDuration: 300,
+  contentStyle: { backgroundColor: '#FFFFFF' },
+};
+
+const mainAppScreenOptions: NativeStackNavigationOptions = {
+  headerShown: false,
+  animation: Platform.OS === 'ios' ? 'default' : 'fade',
+  presentation: 'card',
+  gestureEnabled: false,
+  contentStyle: { backgroundColor: '#FFFFFF' },
 };
 
 const AppNavigator = () => {
@@ -71,6 +84,7 @@ const AppNavigator = () => {
         <Stack.Screen 
           name="MainApp" 
           component={MainAppNavigator}
+          options={mainAppScreenOptions}
         />
       </Stack.Navigator>
     </NavigationContainer>

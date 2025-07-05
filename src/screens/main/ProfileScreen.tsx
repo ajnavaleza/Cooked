@@ -12,8 +12,20 @@ import { Ionicons } from '@expo/vector-icons';
 import { styles } from '../../styles/main/ProfileScreen.styles';
 import * as auth from '../../api/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { CommonActions } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { ProfileStackParamList, RootStackParamList } from '../../navigation/types';
+
+type ProfileScreenNavigationProp = NativeStackNavigationProp<ProfileStackParamList, 'ProfileMain'>;
+type RootNavigationProp = NativeStackNavigationProp<RootStackParamList>;
+
+type OnboardingNavigationParams = {
+  screen: string;
+  params: {
+    isEditing: boolean;
+  };
+};
 
 interface UserData {
   email: string;
@@ -27,31 +39,41 @@ interface UserData {
 }
 
 const ProfileScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<ProfileScreenNavigationProp>();
+  const rootNavigation = useNavigation<RootNavigationProp>();
   const [user, setUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'created' | 'saved'>('created');
 
-  useEffect(() => {
-    const loadUserProfile = async () => {
-      try {
-        const token = await AsyncStorage.getItem('token');
-        if (!token) {
-          setLoading(false);
-          return;
-        }
-
-        const userData = await auth.getUser();
-        setUser(userData);
-      } catch (error) {
-        Alert.alert('Error', 'Failed to load user profile');
-      } finally {
+  const loadUserProfile = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      if (!token) {
         setLoading(false);
+        return;
       }
-    };
 
+      // TODO: Add error handling for failed API calls
+      const userData = await auth.getUser();
+      setUser(userData);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to load user profile');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Load initial data
+  useEffect(() => {
     loadUserProfile();
   }, []);
+
+  // Reload data when screen comes into focus
+  useFocusEffect(
+    React.useCallback(() => {
+      loadUserProfile();
+    }, [])
+  );
 
   const handleLogout = async () => {
     Alert.alert(
@@ -71,7 +93,7 @@ const ProfileScreen = () => {
               await AsyncStorage.removeItem('userData');
               
               // Navigate back to Landing screen
-              navigation.dispatch(
+              rootNavigation.dispatch(
                 CommonActions.reset({
                   index: 0,
                   routes: [{ name: 'Landing' }],
@@ -87,8 +109,9 @@ const ProfileScreen = () => {
   };
 
   const handleEditProfile = () => {
-    // TODO: Navigate to edit profile screen or onboarding
-    Alert.alert('Coming Soon', 'Profile editing will be available soon!');
+    // TODO: Implement profile picture upload functionality
+    // TODO: Add form validation for profile edits
+    navigation.navigate('EditPreferences');
   };
 
   const renderPreferenceChips = (items: string[] | undefined, title: string) => {
@@ -126,6 +149,12 @@ const ProfileScreen = () => {
           <Ionicons name="person-circle-outline" size={80} color="#ccc" />
           <Text style={styles.errorTitle}>Not Logged In</Text>
           <Text style={styles.errorText}>Please log in to view your profile</Text>
+          <TouchableOpacity 
+            style={styles.primaryButton}
+            onPress={() => rootNavigation.navigate('Login')}
+          >
+            <Text style={styles.primaryButtonText}>Log In</Text>
+          </TouchableOpacity>
         </View>
       </SafeAreaView>
     );
@@ -143,7 +172,7 @@ const ProfileScreen = () => {
           <Text style={styles.userName}>
             {user.email?.split('@')[0]?.replace(/[^a-zA-Z0-9]/g, '') || 'User'}
           </Text>
-          <Text style={styles.userEmail}>@{user.email?.split('@')[0] || 'user'}</Text>
+          <Text style={styles.userEmail}>{user.email}</Text>
           
           <TouchableOpacity style={styles.editButton} onPress={handleEditProfile}>
             <Text style={styles.editButtonText}>Edit profile</Text>
@@ -156,6 +185,7 @@ const ProfileScreen = () => {
             style={[styles.tab, activeTab === 'created' && styles.activeTab]}
             onPress={() => setActiveTab('created')}
           >
+            {/* TODO: Implement created recipes list with backend integration */}
             <Text style={[styles.tabText, activeTab === 'created' && styles.activeTabText]}>
               Created
             </Text>
@@ -164,6 +194,7 @@ const ProfileScreen = () => {
             style={[styles.tab, activeTab === 'saved' && styles.activeTab]}
             onPress={() => setActiveTab('saved')}
           >
+            {/* TODO: Implement saved recipes list with backend integration */}
             <Text style={[styles.tabText, activeTab === 'saved' && styles.activeTabText]}>
               Saved
             </Text>

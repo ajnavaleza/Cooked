@@ -20,13 +20,15 @@ const CompletionScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>All Set!</Text>
-      <Text style={styles.subtitle}>
-        Your preferences have been saved. We'll use these to personalize your experience.
-      </Text>
-      <TouchableOpacity style={styles.continueButton} onPress={handleContinue}>
-        <Text style={styles.continueButtonText}>Continue to App</Text>
-      </TouchableOpacity>
+      <View style={styles.contentContainer}>
+        <Text style={styles.title}>Thank you!</Text>
+        <Text style={styles.description}>
+          Your preferences help us personalize your Cooked experience, from recipe suggestions to meal ideas tailored just for you.
+        </Text>
+        <TouchableOpacity style={styles.button} onPress={handleContinue}>
+          <Text style={styles.buttonText}>Let's get cooking!</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };

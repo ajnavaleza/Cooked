@@ -15,4 +15,6 @@ API.interceptors.request.use(async (config) => {
   return config;
 });
 
+export * from './youtube';
+
 export default API; 

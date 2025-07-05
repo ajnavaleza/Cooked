@@ -1,23 +1,18 @@
 import { StyleSheet, Dimensions } from 'react-native';
 import { typography } from '../typography';
+import { sharedStyles, authColors } from './shared.styles';
 
-const { width, height } = Dimensions.get('window');
-
-const colors = {
-  primary: '#4A3531',
-  white: '#FFFFFF',
-  overlay: 'rgba(131, 156, 206, 0.85)', // #839CCE with transparency
-  inputBackground: 'rgba(255, 255, 255, 0.2)',
-  text: {
-    primary: '#FFFFFF',
-    secondary: 'rgba(255, 255, 255, 0.8)',
-  }
-};
+const { height } = Dimensions.get('window');
 
 export const styles = StyleSheet.create({
+  ...sharedStyles,
+  overlay: {
+    ...sharedStyles.overlay,
+    backgroundColor: authColors.overlays.blue,
+  },
   container: {
     flex: 1,
-    backgroundColor: colors.overlay,
+    backgroundColor: authColors.overlays.blue,
   },
   backgroundImage: {
     flex: 1,
@@ -38,7 +33,7 @@ export const styles = StyleSheet.create({
   },
   backButton: {
     fontSize: 16,
-    color: colors.text.primary,
+    color: authColors.text.light.primary,
   },
   content: {
     width: '100%',
@@ -48,85 +43,70 @@ export const styles = StyleSheet.create({
     minHeight: height * 0.6,
   },
   title: {
-    fontSize: 40,
-    fontWeight: 'bold',
-    color: colors.text.primary,
+    ...sharedStyles.title,
+    color: authColors.text.light.primary,
     marginBottom: 60,
     textAlign: 'center',
   },
   subtitle: {
     fontSize: 16,
-    color: colors.text.secondary,
+    color: authColors.text.light.secondary,
     marginBottom: 30,
     textAlign: 'center',
   },
   form: {
     width: '100%',
     maxWidth: 300,
-    marginBottom: 30,
+    marginBottom: 40,
+    gap: 5,
   },
   input: {
+    ...sharedStyles.input,
     backgroundColor: 'transparent',
     borderWidth: 2,
-    borderColor: colors.text.primary,
-    borderRadius: 8,
-    padding: 15,
-    marginBottom: 15,
-    fontSize: 16,
-    color: colors.text.primary,
-    width: '100%',
-  },
-  forgotPassword: {
-    alignSelf: 'flex-end',
-    marginBottom: 20,
+    borderColor: authColors.text.light.primary,
+    color: authColors.text.light.primary,
+    marginBottom: 16,
   },
   forgotPasswordContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    marginTop: 8,
+    marginBottom: 32,
     width: '100%',
   },
   forgotPasswordText: {
-    color: colors.text.primary,
+    color: authColors.text.light.primary,
     fontSize: 14,
   },
   newUserText: {
-    color: colors.text.primary,
+    color: authColors.text.light.primary,
     fontSize: 14,
   },
   loginButton: {
+    ...sharedStyles.button,
     backgroundColor: 'rgba(74, 53, 49, 0.8)',
-    borderRadius: 8,
-    padding: 15,
-    alignItems: 'center',
     marginBottom: 30,
-    width: '100%',
   },
   loginButtonText: {
-    color: colors.white,
-    fontSize: 18,
-    fontWeight: 'bold',
+    ...sharedStyles.buttonText,
+    color: authColors.white,
   },
   dividerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 30,
-    width: '100%',
+    ...sharedStyles.dividerContainer,
     maxWidth: 300,
   },
   divider: {
-    flex: 1,
-    height: 1,
-    backgroundColor: colors.text.secondary,
+    ...sharedStyles.divider,
+    backgroundColor: authColors.text.light.secondary,
   },
   dividerText: {
-    color: colors.text.secondary,
-    paddingHorizontal: 10,
+    ...sharedStyles.dividerText,
+    color: authColors.text.light.secondary,
   },
   socialButtons: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    ...sharedStyles.socialContainer,
     marginBottom: 30,
     gap: 20,
   },
@@ -134,7 +114,7 @@ export const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: colors.inputBackground,
+    backgroundColor: authColors.inputBackground.light,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -149,43 +129,19 @@ export const styles = StyleSheet.create({
     marginTop: 20,
   },
   footerText: {
-    color: colors.text.secondary,
+    color: authColors.text.light.secondary,
     fontSize: 14,
   },
   signUpText: {
-    color: colors.text.primary,
+    color: authColors.text.light.primary,
     fontSize: 14,
     fontWeight: 'bold',
-  },
-  screen: {
-    flex: 1,
-  },
-  background: {
-    position: 'absolute',
-    width: width,
-    height: height,
-    left: 0,
-    top: 0,
-  },
-  overlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: colors.overlay,
-  },
-  inputContainer: {
-    gap: 16,
-    marginBottom: 24,
   },
   loginButtonDisabled: {
     opacity: 0.5,
   },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FFF',
-  },
   termsText: {
-    color: colors.text.secondary,
+    color: authColors.text.light.secondary,
     fontSize: 12,
     textAlign: 'center',
     marginBottom: 30,

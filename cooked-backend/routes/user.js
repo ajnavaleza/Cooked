@@ -20,14 +20,27 @@ router.get('/me', auth, async (req, res) => {
   res.json(user);
 });
 
-router.put('/me/preferences', auth, async (req, res) => {
-  const { preferences } = req.body;
-  const user = await User.findByIdAndUpdate(
-    req.user.id,
-    { preferences },
-    { new: true }
-  ).select('-password');
-  res.json(user);
+router.put('/preferences', auth, async (req, res) => {
+  try {
+    if (!req.body.preferences) {
+      return res.status(400).json({ error: 'No preferences provided' });
+    }
+
+    const userBefore = await User.findById(req.user.id);
+    if (!userBefore) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      { preferences: req.body.preferences },
+      { new: true }
+    );
+
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 module.exports = router; 

@@ -1,40 +1,25 @@
 import { StyleSheet, Dimensions } from 'react-native';
 import { typography } from '../typography';
+import { sharedStyles, authColors } from './shared.styles';
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 export const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-  },
-  background: {
-    position: 'absolute',
-    width: width,
-    height: height,
-    left: 0,
-    top: 0,
-  },
+  ...sharedStyles,
   overlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(243, 215, 125, 0.6)', // Yellow overlay with 70% opacity
+    ...sharedStyles.overlay,
+    backgroundColor: 'rgba(243, 215, 125, 0.6)', // Yellow overlay with 60% opacity
   },
   backButton: {
-    position: 'absolute',
-    top: 60,
-    left: 20,
-    zIndex: 10,
-    padding: 10,
+    ...sharedStyles.backButton,
   },
   backButtonText: {
-    fontSize: 18,
-    color: '#4A3531',
-    fontFamily: typography.fonts.semiBold,
+    ...sharedStyles.backButtonText,
+    color: authColors.primary,
   },
   container: {
-    flex: 1,
-    alignItems: 'center',
+    ...sharedStyles.container,
     justifyContent: 'center',
-    paddingHorizontal: 24,
   },
   logo: {
     width: width * 0.3,
@@ -43,21 +28,20 @@ export const styles = StyleSheet.create({
   },
   welcomeText: {
     fontSize: 32,
-    color: '#4A3531', // Brown color
+    color: authColors.primary,
     fontFamily: typography.fonts.bold,
     textAlign: 'center',
     lineHeight: 40,
   },
   subtitle: {
-    fontSize: 24,
-    color: '#4A3531',
-    fontFamily: typography.fonts.regular,
+    ...sharedStyles.subtitle,
+    color: authColors.primary,
     marginTop: 16,
     marginBottom: 40,
   },
   appName: {
     fontSize: 28,
-    color: '#4A3531',
+    color: authColors.primary,
     fontFamily: typography.fonts.bold,
     position: 'absolute',
     bottom: 40,

@@ -9,7 +9,6 @@ import {
   Alert,
   Image,
   ScrollView,
-  KeyboardAvoidingView,
   Platform,
 } from 'react-native';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
@@ -43,7 +42,7 @@ const LoginScreen = () => {
         Alert.alert('Error', 'Invalid login credentials');
       }
     } catch (error: any) {
-      console.log('Login error:', error);
+      
       
       let errorMessage = 'Login failed. Please try again.';
       
@@ -80,11 +79,12 @@ const LoginScreen = () => {
       source={require('../../assets/auth/login-page/login-page.jpg')}
       style={styles.backgroundImage}
     >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.container}
-      >
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <View style={styles.container}>
+        <ScrollView 
+          contentContainerStyle={styles.scrollContainer}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
           <View style={styles.header}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <Text style={styles.backButton}>Back</Text>
@@ -122,7 +122,6 @@ const LoginScreen = () => {
                   <Text style={styles.newUserText}>New User? Sign Up!</Text>
                 </TouchableOpacity>
                 <TouchableOpacity 
-                  style={styles.forgotPassword}
                   onPress={() => {/* Handle forgot password */}}
                   disabled={isLoading}
                 >
@@ -174,7 +173,7 @@ const LoginScreen = () => {
             </View>
           </View>
         </ScrollView>
-      </KeyboardAvoidingView>
+      </View>
     </ImageBackground>
   );
 };

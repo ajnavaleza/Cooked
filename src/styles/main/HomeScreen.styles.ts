@@ -1,250 +1,159 @@
-import { StyleSheet, Dimensions } from 'react-native';
+import { StyleSheet, Dimensions, StatusBar, Platform } from 'react-native';
+import { sharedStyles } from './shared.styles';
+import { typography } from '../../styles/typography';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
+const STATUS_BAR_HEIGHT = Platform.OS === 'android' ? StatusBar.currentHeight || 0 : 0;
 
 export const styles = StyleSheet.create({
+  ...sharedStyles,
   container: {
+    ...sharedStyles.container,
+  },
+  scrollView: {
     flex: 1,
-    backgroundColor: '#FFF',
   },
-  header: {
+  hero: {
+    height: height,
+    width: '100%',
+    marginTop: -STATUS_BAR_HEIGHT,
+  },
+  heroContent: {
+    flex: 1,
+    backgroundColor: 'rgba(200, 75, 49, 0.4)',
     padding: 20,
-    paddingTop: 60,
-    backgroundColor: '#C84B31',
+    paddingTop: STATUS_BAR_HEIGHT + 20,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  headerTitle: {
+  scrollIndicator: {
+    position: 'absolute',
+    bottom: 20,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  heroTitle: {
     fontSize: 32,
-    fontWeight: 'bold',
-    color: '#FFF',
+    fontFamily: typography.fonts.semiBold,
+    color: '#fff',
+    textAlign: 'center',
     marginBottom: 20,
   },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFF',
+    backgroundColor: '#fff',
     borderRadius: 8,
-    padding: 10,
-    marginBottom: 20,
-  },
-  searchIcon: {
-    marginRight: 10,
+    width: '100%',
+    maxWidth: 400,
+    overflow: 'hidden',
   },
   searchInput: {
     flex: 1,
+    paddingHorizontal: 15,
+    paddingVertical: 12,
     fontSize: 16,
-    color: '#000',
+    fontFamily: typography.fontFamily,
+    color: '#333',
   },
-  recipeOfDay: {
+  searchButton: {
+    backgroundColor: '#C84B31',
+    padding: 12,
+    borderTopRightRadius: 8,
+    borderBottomRightRadius: 8,
+  },
+  section: {
     padding: 20,
   },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    ...sharedStyles.sectionTitle,
+    ...sharedStyles.sectionTitleLight,
+    fontSize: 24,
+    marginBottom: 5,
+  },
+  sectionSubtitle: {
+    fontSize: 16,
+    fontFamily: typography.fontFamily,
+    color: '#666',
+    marginBottom: 20,
+  },
+  recipeOfTheDay: {
+    ...sharedStyles.card,
+  },
+  recipeOfTheDayImage: {
+    width: '100%',
+    height: 200,
+  },
+  recipeOfTheDayContent: {
+    padding: 20,
+  },
+  recipeOfTheDayLabel: {
+    fontSize: 14,
+    fontFamily: typography.fonts.semiBold,
+    color: '#C84B31',
+    marginBottom: 8,
+  },
+  recipeOfTheDayTitle: {
+    fontSize: 24,
+    fontFamily: typography.fonts.semiBold,
     color: '#333',
-    marginBottom: 15,
+    marginBottom: 12,
+  },
+  recipeOfTheDayDescription: {
+    fontSize: 16,
+    fontFamily: typography.fontFamily,
+    color: '#666',
+    marginVertical: 12,
+    lineHeight: 24,
+  },
+  viewRecipeButton: {
+    ...sharedStyles.primaryButton,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    alignSelf: 'flex-start',
+    marginTop: 12,
+  },
+  viewRecipeButtonText: {
+    ...sharedStyles.primaryButtonText,
   },
   recipeCard: {
-    backgroundColor: '#C84B31',
-    borderRadius: 12,
-    overflow: 'hidden',
+    ...sharedStyles.card,
+    marginBottom: 20,
   },
   recipeImage: {
     width: '100%',
     height: 200,
-    resizeMode: 'cover',
   },
   recipeInfo: {
     padding: 15,
   },
   recipeTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#FFF',
-    marginBottom: 10,
+    fontSize: 18,
+    fontFamily: typography.fonts.semiBold,
+    color: '#333',
+    marginBottom: 8,
   },
   recipeMetrics: {
     flexDirection: 'row',
-    marginBottom: 15,
-  },
-  metric: {
-    flexDirection: 'row',
     alignItems: 'center',
-    marginRight: 20,
+    marginTop: 8,
+  },
+  metricItem: {
+    ...sharedStyles.metricItem,
   },
   metricText: {
-    color: '#FFF',
-    marginLeft: 5,
+    ...sharedStyles.metricText,
   },
-  recipeDescription: {
-    color: '#FFF',
-    marginBottom: 15,
-    lineHeight: 20,
-  },
-  viewButton: {
-    backgroundColor: '#FFF',
-    padding: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  viewButtonText: {
-    color: '#C84B31',
-    fontWeight: 'bold',
-  },
-  exploreSection: {
-    padding: 20,
-  },
-  sectionSubtitle: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 20,
-  },
-  exploreCard: {
-    flexDirection: 'row',
-    backgroundColor: '#FFF',
-    borderRadius: 12,
-    marginBottom: 15,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  exploreImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 12,
-    margin: 10,
-  },
-  exploreInfo: {
-    flex: 1,
-    padding: 10,
-  },
-  exploreTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  exploreMetrics: {
-    marginBottom: 5,
-  },
-  exploreMetric: {
-    color: '#666',
-    fontSize: 12,
-  },
-  difficultyTag: {
-    backgroundColor: '#E8F3E9',
-    paddingHorizontal: 10,
-    paddingVertical: 3,
-    borderRadius: 12,
-    alignSelf: 'flex-start',
+  difficultyBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
   },
   difficultyText: {
-    color: '#4CAF50',
+    color: '#fff',
     fontSize: 12,
-  },
-  cuisineTag: {
-    backgroundColor: '#FFE0B2',
-    paddingHorizontal: 10,
-    paddingVertical: 3,
-    borderRadius: 12,
-    alignSelf: 'flex-start',
-    marginTop: 5,
-  },
-  cuisineText: {
-    color: '#F57C00',
-    fontSize: 12,
-  },
-  seeAllButton: {
-    padding: 15,
-    borderRadius: 8,
-    backgroundColor: '#C84B31',
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  seeAllText: {
-    color: '#FFF',
-    fontWeight: 'bold',
-  },
-  newsletterSection: {
-    backgroundColor: '#C84B31',
-    padding: 20,
-  },
-  newsletterTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#FFF',
-    marginBottom: 10,
-  },
-  newsletterSubtitle: {
-    color: '#FFF',
-    marginBottom: 20,
-  },
-  newsletterInput: {
-    flexDirection: 'row',
-    marginBottom: 20,
-  },
-  emailInput: {
-    flex: 1,
-    backgroundColor: '#FFF',
-    padding: 12,
-    borderRadius: 8,
-    marginRight: 10,
-  },
-  joinButton: {
-    backgroundColor: '#FFF',
-    padding: 12,
-    borderRadius: 8,
-    justifyContent: 'center',
-  },
-  joinButtonText: {
-    color: '#C84B31',
-    fontWeight: 'bold',
-  },
-  contactSection: {
-    padding: 20,
-    backgroundColor: '#C84B31',
-  },
-  contactTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#FFF',
-    marginBottom: 10,
-  },
-  contactSubtitle: {
-    color: '#FFF',
-    marginBottom: 20,
-    lineHeight: 20,
-  },
-  contactButton: {
-    backgroundColor: '#FFF',
-    padding: 15,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  contactButtonText: {
-    color: '#C84B31',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  socialLinks: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 20,
-  },
-  socialButton: {
-    marginHorizontal: 10,
-  },
-  footerLinks: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
-  },
-  footerLink: {
-    color: '#FFF',
-    marginHorizontal: 5,
-  },
-  footerDivider: {
-    color: '#FFF',
-    marginHorizontal: 5,
+    fontFamily: typography.fonts.semiBold,
   },
 }); 
