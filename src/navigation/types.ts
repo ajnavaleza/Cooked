@@ -8,6 +8,13 @@ interface UserPreferences {
   allergyOther?: string;
 }
 
+export type MainStackParamList = {
+  MainTabs: undefined;
+  RecipeDetails: {
+    recipeId: number;
+  };
+};
+
 export type ProfileStackParamList = {
   ProfileMain: undefined;
   EditPreferences: {

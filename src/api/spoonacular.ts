@@ -1,16 +1,40 @@
 import axios from 'axios';
 import { API_CONFIG } from '../config/api';
+import Constants from 'expo-constants';
+
+const apiKey = Constants.expoConfig?.extra?.SPOONACULAR_API_KEY;
+
+if (!apiKey) {
+  console.warn('Spoonacular API key is not set. Please set EXPO_PUBLIC_SPOONACULAR_API_KEY in your environment.');
+}
 
 const spoonacularAPI = axios.create({
-  baseURL: API_CONFIG.SPOONACULAR_BASE_URL,
+  baseURL: 'https://api.spoonacular.com',  // Changed from /recipes to root URL
   timeout: API_CONFIG.TIMEOUT,
-  headers: {
-    'x-api-key': API_CONFIG.SPOONACULAR_API_KEY,
-  },
   params: {
-    apiKey: API_CONFIG.SPOONACULAR_API_KEY,
+    apiKey: apiKey,
   },
 });
+
+// Add request/response interceptors for debugging
+spoonacularAPI.interceptors.request.use(request => {
+  console.log('Making request to:', request.url);
+  console.log('With params:', request.params);
+  return request;
+});
+
+spoonacularAPI.interceptors.response.use(
+  response => response,
+  error => {
+    console.error('API Error:', {
+      url: error.config?.url,
+      params: error.config?.params,
+      status: error.response?.status,
+      data: error.response?.data
+    });
+    throw error;
+  }
+);
 
 // Types for Spoonacular API responses
 export interface SpoonacularRecipe {
@@ -165,8 +189,13 @@ export const spoonacularApi = {
     number?: number;
     include_nutrition?: boolean;
   } = {}): Promise<RandomRecipesResult> => {
-    const response = await spoonacularAPI.get('/recipes/random', { params });
-    return response.data;
+    try {
+      const response = await spoonacularAPI.get('/recipes/random', { params });
+      return response.data;
+    } catch (error) {
+      console.error('Error in getRandomRecipes:', error);
+      throw error;
+    }
   },
 
   // Get recipe information by ID

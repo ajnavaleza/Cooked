@@ -1,108 +1,109 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   View,
-  Text,
   FlatList,
   TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
-  Alert,
   Share,
   Dimensions,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import YoutubePlayer from 'react-native-youtube-iframe';
-import { YouTubeVideo, mockCookingVideos } from '../../api';
+import { YouTubeVideo, youtubeAPI } from '../../api/youtube';
 import { styles } from '../../styles/main/ExploreScreen.styles';
-
 
 const { width, height } = Dimensions.get('window');
 const SCREEN_HEIGHT = height;
 
-
-// Video scaling parameters - adjust these to fit the video on screen
 const VIDEO_SCALING = {
   webview: {
-    scale: 0.92,    // Overall webview scale (0.8 to 1.0)
-    width: width,   // Width of the video container
-    height: SCREEN_HEIGHT, // Height of the video container
+    scale: 0.92,
+    width: width,
+    height: SCREEN_HEIGHT,
     position: {
-      top: -15,     // Negative moves up, positive moves down (in pixels)
+      top: -15,
     }
   },
   iframe: {
-    scale: 0.95,    // Scale of the YouTube iframe (0.8 to 1.0)
+    scale: 0.95,
     position: {
-      top: '45%',   // Percentage from top (lower percentage = higher position)
-      left: '50%',  // Horizontal position from left
+      top: '45%',
+      left: '50%',
     }
   },
   video: {
-    objectFit: 'cover', // 'contain' shows full video, 'cover' fills screen but might crop
+    objectFit: 'cover',
   }
 };
-
 
 interface VideoItem extends YouTubeVideo {
   isBookmarked: boolean;
 }
-
 
 const ExploreScreen = () => {
   const [videos, setVideos] = useState<VideoItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [playingVideoId, setPlayingVideoId] = useState<string | null>(null);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const flatListRef = useRef<FlatList>(null);
 
-
-  useEffect(() => {
-    loadVideos();
-  }, []);
-
-
-  useEffect(() => {
-    if (videos.length > 0 && currentIndex < videos.length) {
-      const currentVideo = videos[currentIndex];
-      setPlayingVideoId(currentVideo.id.videoId);
-    }
-  }, [currentIndex, videos]);
-
+  const viewabilityConfig = useRef({
+    itemVisiblePercentThreshold: 50,
+    minimumViewTime: 0,
+  });
 
   const loadVideos = async (refresh: boolean = false) => {
     try {
-      setLoading(true);
-      // TODO: Replace mock data with actual YouTube API integration
-      const mockVideos = mockCookingVideos.map((video: YouTubeVideo) => ({
+      if (refresh) {
+        setLoading(true);
+      } else {
+        setLoadingMore(true);
+      }
+
+      const response = await youtubeAPI.fetchVideos(refresh);
+      
+      const newVideos = response.videos.map(video => ({
         ...video,
         isBookmarked: false,
       }));
 
-      setVideos(mockVideos);
-      if (mockVideos.length > 0) {
+      if (refresh) {
+        setVideos(newVideos);
         setCurrentIndex(0);
-        setPlayingVideoId(mockVideos[0].id.videoId);
+      } else {
+        setVideos(prev => [...prev, ...newVideos]);
       }
+
+      setHasMore(response.hasMore);
     } catch (error) {
       console.error('Error loading videos:', error);
     } finally {
       setLoading(false);
+      setLoadingMore(false);
       setRefreshing(false);
     }
   };
 
+  useEffect(() => {
+    loadVideos(true);
+  }, []);
 
   const handleRefresh = () => {
-    // TODO: Implement proper refresh functionality with actual API call
     setRefreshing(true);
     loadVideos(true);
   };
 
+  const handleLoadMore = () => {
+    if (!loadingMore && hasMore && videos.length > 0) {
+      loadVideos();
+    }
+  };
 
   const handleShare = async (video: VideoItem) => {
     try {
-      // TODO: Add analytics tracking for video shares
       const youtubeUrl = `https://www.youtube.com/watch?v=${video.id.videoId}`;
       await Share.share({
         message: `Check out this cooking video: ${video.snippet.title}\n${youtubeUrl}`,
@@ -113,38 +114,21 @@ const ExploreScreen = () => {
     }
   };
 
-
-  const onViewableItemsChanged = ({ viewableItems }: any) => {
+  const onViewableItemsChanged = useCallback(({ viewableItems }: any) => {
     if (viewableItems.length > 0) {
       const visibleItem = viewableItems[0];
-      const newIndex = visibleItem.index;
-      const newVideoId = visibleItem.item.id.videoId;
-     
-      if (newIndex !== currentIndex) {
-        setCurrentIndex(newIndex);
-        setPlayingVideoId(newVideoId);
-      }
+      setCurrentIndex(visibleItem.index);
     }
-  };
+  }, []);
 
-
-  const viewabilityConfig = {
-    itemVisiblePercentThreshold: 60,
-    minimumViewTime: 100,
-  };
-
-
-  const getItemLayout = (data: any, index: number) => ({
+  const getItemLayout = (_data: any, index: number) => ({
     length: SCREEN_HEIGHT,
     offset: SCREEN_HEIGHT * index,
     index,
   });
 
-
   const renderVideoItem = ({ item, index }: { item: VideoItem; index: number }) => {
     const isCurrentVideo = index === currentIndex;
-    const shouldPlay = isCurrentVideo && playingVideoId === item.id.videoId;
-
 
     return (
       <View style={[styles.videoContainer, {
@@ -152,7 +136,7 @@ const ExploreScreen = () => {
         width: VIDEO_SCALING.webview.width,
         justifyContent: 'center',
         alignItems: 'center',
-        transform: [{ translateY: VIDEO_SCALING.webview.position.top }], // Move entire container up/down
+        transform: [{ translateY: VIDEO_SCALING.webview.position.top }],
       }]}>
         <View style={[styles.videoPlayer, {
           width: VIDEO_SCALING.webview.width,
@@ -160,10 +144,10 @@ const ExploreScreen = () => {
           overflow: 'hidden',
         }]}>
           <YoutubePlayer
-            key={`${item.id.videoId}-${shouldPlay}`}
+            key={`${item.id.videoId}-${isCurrentVideo}`}
             height={VIDEO_SCALING.webview.height}
             width={VIDEO_SCALING.webview.width}
-            play={shouldPlay}
+            play={isCurrentVideo}
             videoId={item.id.videoId}
             webViewStyle={{
               backgroundColor: '#000',
@@ -178,9 +162,10 @@ const ExploreScreen = () => {
               loop: true,
               playsinline: true,
               fs: false,
+              autoplay: 1,
+              mute: 0
             }}
             webViewProps={{
-              pointerEvents: 'none',
               allowsFullscreenVideo: false,
               scrollEnabled: false,
               bounces: false,
@@ -194,15 +179,10 @@ const ExploreScreen = () => {
                     display: flex !important;
                     justify-content: center !important;
                     align-items: center !important;
-                    pointer-events: none !important;
-                    user-select: none !important;
-                    -webkit-user-select: none !important;
-                    -webkit-touch-callout: none !important;
                     height: 100vh !important;
                     width: 100vw !important;
                     overflow: hidden !important;
                   }
-
 
                   iframe {
                     position: absolute !important;
@@ -213,113 +193,104 @@ const ExploreScreen = () => {
                     height: 100vh !important;
                   }
 
-
-                  /* Hide all YouTube UI elements */
-                  .ytp-chrome-top, .ytp-chrome-bottom, .ytp-gradient-top,
-                  .ytp-gradient-bottom, .ytp-pause-overlay, .ytp-youtube-button,
-                  .ytp-embed, .ytp-embed-overlay, .ytp-title-channel,
-                  .ytp-ce-element, .ytp-cards-button, .ytp-contextmenu,
-                  .ytp-player-content, .ytp-bezel, .ytp-chrome-controls,
-                  .ytp-spinner, .ytp-player-content-interactable {
-                    display: none !important;
-                    opacity: 0 !important;
-                    pointer-events: none !important;
-                  }
-
-
                   video {
                     object-fit: ${VIDEO_SCALING.video.objectFit} !important;
                     width: 100% !important;
                     height: 100% !important;
                   }
+
+                  /* Hide all YouTube UI elements */
+                  .ytp-chrome-top,
+                  .ytp-chrome-bottom,
+                  .ytp-gradient-top,
+                  .ytp-gradient-bottom,
+                  .ytp-pause-overlay,
+                  .ytp-youtube-button,
+                  .ytp-watermark,
+                  .ytp-embed,
+                  .ytp-title-channel,
+                  .ytp-title,
+                  .ytp-share-button,
+                  .ytp-watch-later-button,
+                  .ytp-forward-button,
+                  .ytp-prev-button,
+                  .ytp-next-button,
+                  .ytp-heat-map-container,
+                  .ytp-ce-element,
+                  .ytp-iv-player-content,
+                  .ytp-gradient-bottom,
+                  .ytp-chrome-controls,
+                  .ytp-pause-overlay {
+                    display: none !important;
+                  }
                 \`;
                 document.head.appendChild(style);
-               
-                // Disable all interactions
-                ['click', 'touchstart'].forEach(event => {
-                  document.addEventListener(event, e => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    return false;
-                  }, true);
-                });
+
+                // Force autoplay
+                const autoplayAndUnmute = () => {
+                  const video = document.querySelector('video');
+                  if (video) {
+                    video.play();
+                    video.muted = false;
+                  }
+                };
+
+                // Try to autoplay immediately and after a short delay
+                autoplayAndUnmute();
+                setTimeout(autoplayAndUnmute, 1000);
+
+                // Prevent any click events from pausing the video
+                document.addEventListener('click', (e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }, true);
               `,
             }}
           />
-        </View>
-
-
-        {/* Video Info Overlay */}
-        <View style={[styles.videoInfoOverlay, {
-          paddingBottom: 110, // Reduce bottom padding
-          paddingTop: 40, // Add top padding
-        }]}>
-          <View style={styles.videoInfo}>
-            <Text style={styles.videoTitle}>{item.snippet.title}</Text>
-            <Text style={styles.channelName}>@{item.snippet.channelTitle}</Text>
-            <Text style={styles.videoDescription} numberOfLines={2}>
-              {item.snippet.description}
-            </Text>
-            <View style={styles.hashtagContainer}>
-              <Text style={styles.hashtag}>#cooking</Text>
-              <Text style={styles.hashtag}>#recipe</Text>
-              <Text style={styles.hashtag}>#food</Text>
-            </View>
-          </View>
-
-
-          {/* Action Buttons */}
-          <View style={styles.actionButtons}>
-            <TouchableOpacity
-              style={styles.actionButton}
-              onPress={() => handleShare(item)}
-            >
-              <Ionicons name="share-outline" size={30} color="#FFF" />
-              <Text style={styles.actionText}>Share</Text>
-            </TouchableOpacity>
-          </View>
         </View>
       </View>
     );
   };
 
+  const renderFooter = () => {
+    if (!loadingMore) return null;
+    return (
+      <View style={{ height: 50, justifyContent: 'center' }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  };
 
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#C84B31" />
-        <Text style={styles.loadingText}>Loading videos...</Text>
+        <ActivityIndicator size="large" />
       </View>
     );
   }
 
-
   return (
-    <View style={styles.container}>
-      <FlatList
-        ref={flatListRef}
-        data={videos}
-        renderItem={renderVideoItem}
-        keyExtractor={(item) => item.id.videoId}
-        pagingEnabled
-        showsVerticalScrollIndicator={false}
-        snapToInterval={SCREEN_HEIGHT}
-        snapToAlignment="start"
-        decelerationRate="fast"
-        onViewableItemsChanged={onViewableItemsChanged}
-        viewabilityConfig={viewabilityConfig}
-        getItemLayout={getItemLayout}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={handleRefresh}
-            tintColor="#C84B31"
-          />
-        }
-      />
-    </View>
+    <FlatList
+      ref={flatListRef}
+      data={videos}
+      renderItem={renderVideoItem}
+      keyExtractor={(item) => item.id.videoId}
+      pagingEnabled
+      showsVerticalScrollIndicator={false}
+      snapToInterval={SCREEN_HEIGHT}
+      snapToAlignment="start"
+      decelerationRate="fast"
+      onViewableItemsChanged={onViewableItemsChanged}
+      viewabilityConfig={viewabilityConfig.current}
+      getItemLayout={getItemLayout}
+      onEndReached={handleLoadMore}
+      onEndReachedThreshold={0.5}
+      ListFooterComponent={renderFooter}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+      }
+    />
   );
 };
-
 
 export default ExploreScreen;

@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 import { View, Text, ActivityIndicator, StyleSheet, Platform } from 'react-native';
-import type { ProfileStackParamList } from './types';
+import type { ProfileStackParamList, MainStackParamList } from './types';
 import { typography } from '../styles/typography';
 
 // Lazy load screens
@@ -13,9 +13,11 @@ const RecipesScreen = React.lazy(() => import('../screens/main/RecipesScreen'));
 const ProfileScreen = React.lazy(() => import('../screens/main/ProfileScreen'));
 const EditPreferencesScreen = React.lazy(() => import('../screens/main/EditPreferencesScreen'));
 const EditProfileScreen = React.lazy(() => import('../screens/main/EditProfileScreen'));
+const RecipeDetailsScreen = React.lazy(() => import('../screens/main/RecipeDetailsScreen'));
 
 const Tab = createBottomTabNavigator();
 const ProfileStack = createNativeStackNavigator<ProfileStackParamList>();
+const MainStack = createNativeStackNavigator<MainStackParamList>();
 
 // Loading component for lazy loaded screens
 const LoadingScreen = () => (
@@ -68,7 +70,8 @@ const ProfileStackNavigator = () => (
   </ProfileStack.Navigator>
 );
 
-const MainAppNavigator = () => {
+// Tab Navigator
+const TabNavigator = () => {
   return (
     <Tab.Navigator
       screenOptions={{
@@ -134,6 +137,27 @@ const MainAppNavigator = () => {
         }}
       />
     </Tab.Navigator>
+  );
+};
+
+const MainAppNavigator = () => {
+  return (
+    <MainStack.Navigator
+      screenOptions={{
+        headerShown: false,
+        presentation: 'card',
+        animation: Platform.OS === 'ios' ? 'default' : 'fade',
+      }}
+    >
+      <MainStack.Screen name="MainTabs" component={TabNavigator} />
+      <MainStack.Screen
+        name="RecipeDetails"
+        children={(props) => <LazyScreen component={RecipeDetailsScreen} {...props} />}
+        options={{
+          animation: 'slide_from_right',
+        }}
+      />
+    </MainStack.Navigator>
   );
 };
 
