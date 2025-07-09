@@ -3,7 +3,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_CONFIG } from '../config/api';
 
 const API = axios.create({
-  baseURL: API_CONFIG.LOCAL_API_BASE_URL,
+  baseURL: API_CONFIG.BASE_URL,
+  timeout: API_CONFIG.TIMEOUT,
 });
 
 // Add token to all requests
@@ -15,6 +16,20 @@ API.interceptors.request.use(async (config) => {
   return config;
 });
 
-export * from './youtube';
+// Add error handling
+API.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    if (API_CONFIG.FEATURES.DEBUG) {
+      console.error('API Error:', {
+        url: error.config?.url,
+        method: error.config?.method,
+        status: error.response?.status,
+        data: error.response?.data,
+      });
+    }
+    throw error;
+  }
+);
 
 export default API; 

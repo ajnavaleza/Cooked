@@ -4,7 +4,7 @@ import { styles } from '../../styles/onboarding/CompletionScreen.styles';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useOnboarding } from './OnboardingContext';
-import API from '../../api';
+import * as auth from '../../api/auth';
 
 const CompletionScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
@@ -19,13 +19,12 @@ const CompletionScreen = () => {
       const preferences = {
         cuisines: answers.cuisines || [],
         diets: answers.diets || [],
-        recipeTypes: answers.recipeTypes || [],
         allergies: answers.allergies || [],
         allergyOther: answers.allergyOther || '',
       };
 
       // Save preferences to backend
-      await API.put('/api/user/preferences', { preferences });
+      await auth.updatePreferences(preferences);
 
       // Navigate to main app
       navigation.reset({

@@ -1,30 +1,27 @@
 import Constants from 'expo-constants';
 
 const getApiBaseUrl = () => {
-  // Use environment variable if available, otherwise fallback to Railway production URL
-  const deployedUrl = Constants.expoConfig?.extra?.API_BASE_URL;
-  const railwayUrl = 'https://cooked-production.up.railway.app/api';
-  
-  return deployedUrl || railwayUrl;
+  return Constants.expoConfig?.extra?.API_BASE_URL || 'https://cooked-production.up.railway.app/api';
 };
 
 export const API_CONFIG = {
   BASE_URL: getApiBaseUrl(),
   SPOONACULAR_API_KEY: (Constants.expoConfig?.extra?.SPOONACULAR_API_KEY || '').trim(),
   SPOONACULAR_BASE_URL: 'https://api.spoonacular.com/recipes',
-  LOCAL_API_URL: getApiBaseUrl(),
-  LOCAL_API_BASE_URL: getApiBaseUrl(),
   TIMEOUT: 10000,
   RETRY_ATTEMPTS: 3,
   CACHE_TTL: 5 * 60 * 1000, // 5 minutes
-  // Rate limiting
-  MAX_REQUESTS_PER_MINUTE: 150,
-  REQUEST_DELAY: 1000 / (150 / 60), // Delay between requests
-  // Batch settings
-  MAX_BATCH_SIZE: 10,
-  BATCH_DELAY: 2000,
-  // Feature flags
-  ENABLE_CACHE: true,
-  ENABLE_OFFLINE_MODE: false,
-  DEBUG_MODE: false,
+  RATE_LIMIT: {
+    MAX_REQUESTS_PER_MINUTE: 150,
+    DELAY: 1000 / (150 / 60), // Delay between requests
+  },
+  BATCH: {
+    SIZE: 10,
+    DELAY: 2000,
+  },
+  FEATURES: {
+    CACHE: true,
+    OFFLINE_MODE: false,
+    DEBUG: false,
+  },
 }; 

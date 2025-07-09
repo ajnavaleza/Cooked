@@ -1,7 +1,6 @@
 import API from './index';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { OnboardingAnswers } from '../screens/onboarding/OnboardingContext';
-import { API_CONFIG } from '../config/api';
 
 interface AuthResponse {
   token: string;
@@ -13,21 +12,23 @@ interface AuthResponse {
   };
 }
 
+const saveToken = async (token: string) => {
+  await AsyncStorage.setItem('token', token);
+};
+
 export const register = async (email: string, password: string, name?: string, birthday?: string): Promise<AuthResponse> => {
   const res = await API.post('/auth/register', { email, password, name, birthday });
-  // Save token for future requests
-  await AsyncStorage.setItem('token', res.data.token);
+  await saveToken(res.data.token);
   return res.data;
 };
 
 export const login = async (email: string, password: string): Promise<AuthResponse> => {
   const res = await API.post('/auth/login', { email, password });
-  // Save token for future requests
-  await AsyncStorage.setItem('token', res.data.token);
+  await saveToken(res.data.token);
   return res.data;
 };
 
-export const logout = async (): Promise<void> => {
+export const logout = async () => {
   await AsyncStorage.removeItem('token');
 };
 
@@ -36,12 +37,12 @@ export const getUser = async () => {
   return res.data;
 };
 
-export const updatePreferences = async (preferences: Partial<OnboardingAnswers>) => {
+export const updatePreferences = async (preferences: OnboardingAnswers) => {
   const res = await API.put('/user/preferences', { preferences });
   return res.data;
 };
 
-export const updateProfile = async (name: string, birthday: string) => {
-  const res = await API.put('/user/me/profile', { name, birthday });
+export const updateProfile = async (updates: { name?: string; email?: string; birthday?: string }) => {
+  const res = await API.put('/user/profile', updates);
   return res.data;
 }; 

@@ -19,12 +19,6 @@ export interface YouTubeVideo {
   };
 }
 
-interface YouTubeSearchResponse {
-  items: YouTubeVideo[];
-  nextPageToken?: string;
-}
-
-// Popular cooking channels
 const COOKING_CHANNELS = [
   'UCJFp8uSYCjXOMnkUyb3CQ3Q', // Tasty
   'UC6S5a3MQtr_PSWZxysXkOCg', // Joshua Weissman
@@ -33,7 +27,6 @@ const COOKING_CHANNELS = [
   'UCJFp8uSYCjXOMnkUyb3CQ3Q', // Bon Appetit
 ];
 
-// Specific cooking-related keywords
 const SEARCH_KEYWORDS = [
   'recipe tutorial',
   'cooking tutorial',
@@ -53,7 +46,7 @@ class YouTubeAPI {
 
   private constructor() {}
 
-  static getInstance(): YouTubeAPI {
+  public static getInstance(): YouTubeAPI {
     if (!YouTubeAPI.instance) {
       YouTubeAPI.instance = new YouTubeAPI();
     }
@@ -66,38 +59,34 @@ class YouTubeAPI {
     return channel;
   }
 
-  private getRandomKeywords(count: number = 1): string[] {
-    const shuffled = [...SEARCH_KEYWORDS].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, count);
+  private getRandomKeywords(count: number): string[] {
+    return SEARCH_KEYWORDS
+      .sort(() => Math.random() - 0.5)
+      .slice(0, count);
   }
 
   async fetchVideos(isRefresh: boolean = false): Promise<{ videos: YouTubeVideo[]; hasMore: boolean }> {
-    try {
-      if (this.isLoading) {
-        return { videos: [], hasMore: false };
-      }
+    if (this.isLoading) {
+      return { videos: [], hasMore: false };
+    }
 
+    try {
       this.isLoading = true;
 
-      // Reset page token if refreshing
       if (isRefresh) {
         this.nextPageToken = null;
         this.currentChannelIndex = 0;
       }
 
-      // If we don't have more pages and it's not a refresh, return empty
       if (!this.nextPageToken && !isRefresh) {
         return { videos: [], hasMore: false };
       }
 
-      const channelId = this.getNextChannel();
-      const keyword = this.getRandomKeywords(1)[0];
-
-      const response = await axios.get<YouTubeSearchResponse>(`${YOUTUBE_API_BASE_URL}/search`, {
+      const response = await axios.get(`${YOUTUBE_API_BASE_URL}/search`, {
         params: {
           part: 'snippet',
           maxResults: 10,
-          q: keyword,
+          q: this.getRandomKeywords(1)[0],
           type: 'video',
           videoDuration: 'short',
           videoEmbeddable: true,
@@ -106,44 +95,24 @@ class YouTubeAPI {
           regionCode: 'US',
           relevanceLanguage: 'en',
           safeSearch: 'strict',
-          channelId: channelId,
-          order: 'relevance', // Changed to relevance for better results
+          channelId: this.getNextChannel(),
+          order: 'relevance',
           videoDefinition: 'high',
           fields: 'items(id/videoId,snippet(title,description,channelTitle,thumbnails)),nextPageToken'
         }
       });
 
       this.nextPageToken = response.data.nextPageToken || null;
-
-      // Filter out videos without proper IDs or snippets
-      const validVideos = response.data.items.filter(
-        video => video.id?.videoId && 
-                video.snippet?.title &&
-                (
-                  video.snippet.title.toLowerCase().includes('cook') ||
-                  video.snippet.title.toLowerCase().includes('recipe') ||
-                  video.snippet.title.toLowerCase().includes('food') ||
-                  video.snippet.title.toLowerCase().includes('make') ||
-                  video.snippet.description.toLowerCase().includes('recipe') ||
-                  video.snippet.description.toLowerCase().includes('ingredients')
-                )
-      );
-
       return {
-        videos: validVideos,
-        hasMore: !!this.nextPageToken && validVideos.length > 0
+        videos: response.data.items || [],
+        hasMore: !!this.nextPageToken
       };
     } catch (error) {
-      console.error('Error fetching YouTube videos:', error);
-      throw error;
+      console.error('YouTube API Error:', error);
+      return { videos: [], hasMore: false };
     } finally {
       this.isLoading = false;
     }
-  }
-
-  resetPageToken() {
-    this.nextPageToken = null;
-    this.currentChannelIndex = 0;
   }
 }
 

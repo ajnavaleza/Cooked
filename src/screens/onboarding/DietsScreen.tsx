@@ -35,7 +35,7 @@ const DietsScreen = () => {
       const updated = { ...prev, diets: selected };
       return updated;
     });
-    navigation.navigate('Recipes');
+    navigation.navigate('Allergies');
   };
 
   const handleSkip = () => {
@@ -43,7 +43,7 @@ const DietsScreen = () => {
       const updated = { ...prev, diets: ['No specific diet'] };
       return updated;
     });
-    navigation.navigate('Recipes');
+    navigation.navigate('Allergies');
   };
 
   return (

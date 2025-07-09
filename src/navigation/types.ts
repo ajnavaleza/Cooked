@@ -1,33 +1,21 @@
 import type { OnboardingStackParamList } from '../screens/onboarding/OnboardingNavigator';
 
-interface UserPreferences {
-  cuisines?: string[];
-  diets?: string[];
-  allergies?: string[];
-  recipeTypes?: string[];
-  allergyOther?: string;
-}
-
 export type MainStackParamList = {
   MainTabs: undefined;
-  RecipeDetails: {
-    recipeId: number;
-  };
+  RecipeDetails: { recipeId: number };
 };
 
 export type ProfileStackParamList = {
   ProfileMain: undefined;
-  EditPreferences: {
-    currentPreferences: UserPreferences;
-    onSave: (preferences: UserPreferences) => void;
-  };
-  EditProfile: {
-    currentProfile: {
-      name?: string;
-      birthday?: string;
-    };
-    onSave: (profile: { name?: string; birthday?: string }) => void;
-  };
+  EditPreferences: undefined;
+  EditProfile: undefined;
+};
+
+export type TabParamList = {
+  Home: undefined;
+  Explore: undefined;
+  Recipes: undefined;
+  Profile: undefined;
 };
 
 export type RootStackParamList = {

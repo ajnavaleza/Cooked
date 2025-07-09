@@ -15,13 +15,8 @@ export const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#E0E0E0',
   },
-  backButton: {
+  closeButton: {
     padding: 8,
-  },
-  backButtonText: {
-    fontSize: 24,
-    color: '#C84B31',
-    fontFamily: typography.fonts.regular,
   },
   title: {
     fontSize: 20,
@@ -29,11 +24,14 @@ export const styles = StyleSheet.create({
     fontFamily: typography.fonts.bold,
   },
   saveButton: {
-    padding: 8,
+    backgroundColor: '#C84B31',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 8,
   },
   saveButtonText: {
     fontSize: 16,
-    color: '#C84B31',
+    color: '#FFFFFF',
     fontFamily: typography.fonts.bold,
   },
   tabsContainer: {
@@ -96,5 +94,10 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
     fontFamily: typography.fonts.regular,
+  },
+  centerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 }); 

@@ -62,31 +62,12 @@ const ALLERGIES = [
   'Other',
 ];
 
-const RECIPES = [
-  'Breakfast',
-  'Lunch',
-  'Dinner',
-  'Snacks',
-  'Desserts',
-  'Drinks & Smoothies',
-  'Appetizers',
-  'Soups & Salads',
-  'Side Dishes',
-  'One-Pot / One-Pan',
-  'Meal Prep / Make-Ahead',
-  'Vegan / Vegetarian',
-  'High-Protein / Low-Carb',
-  'Comfort Food',
-  'Microwave / Dorm-Friendly',
-];
-
-type Tab = 'Cuisines' | 'Diets' | 'Allergies' | 'Types';
+type Tab = 'Cuisines' | 'Diets' | 'Allergies';
 
 interface UserPreferences {
   cuisines: string[];
   diets: string[];
   allergies: string[];
-  recipeTypes: string[];
   allergyOther?: string;
 }
 
@@ -99,14 +80,12 @@ const EditPreferencesScreen = () => {
     cuisines: [],
     diets: [],
     allergies: [],
-    recipeTypes: [],
     allergyOther: '',
   });
   const [preferences, setPreferences] = useState<UserPreferences>({
     cuisines: [],
     diets: [],
     allergies: [],
-    recipeTypes: [],
     allergyOther: '',
   });
 
@@ -160,7 +139,6 @@ const EditPreferencesScreen = () => {
           cuisines: userData.preferences.cuisines || [],
           diets: userData.preferences.diets || [],
           allergies: userData.preferences.allergies || [],
-          recipeTypes: userData.preferences.recipeTypes || [],
           allergyOther: userData.preferences.allergyOther || '',
         };
         setInitialPreferences(loadedPreferences);
@@ -180,10 +158,16 @@ const EditPreferencesScreen = () => {
   const handleSave = async () => {
     try {
       setSaving(true);
-      await auth.updateUser({ preferences });
+      await auth.updatePreferences(preferences);
+      setInitialPreferences(preferences); // Update initial preferences after successful save
+      Alert.alert('Success', 'Preferences saved successfully');
       navigation.goBack();
-    } catch (error) {
-      Alert.alert('Error', 'Failed to save preferences');
+    } catch (error: any) {
+      console.error('Error saving preferences:', error);
+      Alert.alert(
+        'Error',
+        error.response?.data?.error || error.message || 'Failed to save preferences'
+      );
     } finally {
       setSaving(false);
     }
@@ -293,23 +277,6 @@ const EditPreferencesScreen = () => {
     </ScrollView>
   );
 
-  const renderTypes = () => (
-    <ScrollView style={styles.tabContent}>
-      {RECIPES.map(type => (
-        <TouchableOpacity
-          key={type}
-          style={[
-            styles.optionRow,
-            preferences.recipeTypes.includes(type) && styles.selectedOption,
-          ]}
-          onPress={() => toggleItem('recipeTypes', type)}
-        >
-          <Text style={styles.optionText}>{type}</Text>
-        </TouchableOpacity>
-      ))}
-    </ScrollView>
-  );
-
   if (loading) {
     return (
       <SafeAreaView style={styles.container}>
@@ -321,33 +288,40 @@ const EditPreferencesScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={handleClose}>
-          <Text style={styles.backButtonText}>✕</Text>
+        <TouchableOpacity style={styles.closeButton} onPress={handleClose}>
+          <Ionicons name="close" size={24} color="#666" />
         </TouchableOpacity>
         <Text style={styles.title}>Edit Preferences</Text>
-        <TouchableOpacity 
-          style={styles.saveButton} 
+        <TouchableOpacity
+          style={styles.saveButton}
           onPress={handleSave}
           disabled={saving || !hasUnsavedChanges()}
         >
-          <Text style={[
-            styles.saveButtonText,
-            (saving || !hasUnsavedChanges()) && { opacity: 0.5 }
-          ]}>
-            {saving ? 'Saving...' : 'Save'}
-          </Text>
+          {saving ? (
+            <ActivityIndicator size="small" color="#FFF" />
+          ) : (
+            <Text style={styles.saveButtonText}>Save</Text>
+          )}
         </TouchableOpacity>
       </View>
+
       <View style={styles.tabsContainer}>
         {renderTabButton('Cuisines')}
         {renderTabButton('Diets')}
         {renderTabButton('Allergies')}
-        {renderTabButton('Types')}
       </View>
-      {activeTab === 'Cuisines' && renderCuisines()}
-      {activeTab === 'Diets' && renderDiets()}
-      {activeTab === 'Allergies' && renderAllergies()}
-      {activeTab === 'Types' && renderTypes()}
+
+      {loading ? (
+        <View style={styles.centerContainer}>
+          <ActivityIndicator size="large" color="#FF6B6B" />
+        </View>
+      ) : (
+        <>
+          {activeTab === 'Cuisines' && renderCuisines()}
+          {activeTab === 'Diets' && renderDiets()}
+          {activeTab === 'Allergies' && renderAllergies()}
+        </>
+      )}
     </SafeAreaView>
   );
 };

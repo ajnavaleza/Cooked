@@ -15,7 +15,7 @@ import {
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { spoonacularApi, SpoonacularRecipe } from '../../api/spoonacular';
 import { typography } from '../../styles/typography';
-import API from '../../api';
+import { recipeService } from '../../api/recipes';
 
 const { width } = Dimensions.get('window');
 const STATUS_BAR_HEIGHT = Platform.OS === 'android' ? StatusBar.currentHeight || 0 : 0;
@@ -57,9 +57,8 @@ const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({ route, naviga
 
   const checkIfRecipeIsSaved = async () => {
     try {
-      const response = await API.get('/api/user/recipes/saved');
-      const savedRecipes = response.data;
-      setIsSaved(savedRecipes.some((recipe: any) => recipe.recipeId === recipeId.toString()));
+      const saved = await recipeService.isRecipeSaved(recipeId);
+      setIsSaved(saved);
     } catch (error) {
       console.error('Error checking saved recipe status:', error);
     }
@@ -69,11 +68,11 @@ const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({ route, naviga
     try {
       setIsSaving(true);
       if (isSaved) {
-        await API.delete(`/api/user/recipes/save/${recipeId}`);
+        await recipeService.unsaveRecipe(recipeId);
         setIsSaved(false);
         Alert.alert('Success', 'Recipe removed from saved recipes');
       } else {
-        await API.post('/api/user/recipes/save', { recipeId: recipeId.toString() });
+        await recipeService.saveRecipe(recipeId);
         setIsSaved(true);
         Alert.alert('Success', 'Recipe saved successfully');
       }
@@ -151,7 +150,7 @@ const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({ route, naviga
           <View style={styles.metricItem}>
             <MaterialIcons name="local-fire-department" size={24} color="#666" />
             <Text style={styles.metricValue}>
-              {recipe.nutrition?.nutrients.find(n => n.name === 'Calories')?.amount.toFixed(0) || '---'}
+              {recipe.nutrition?.nutrients.find((n: { name: string; amount: number }) => n.name === 'Calories')?.amount.toFixed(0) || '---'}
             </Text>
             <Text style={styles.metricLabel}>Calories</Text>
           </View>
@@ -168,7 +167,7 @@ const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({ route, naviga
         {/* Ingredients */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Ingredients</Text>
-          {recipe.extendedIngredients.map((ingredient, index) => (
+          {recipe.extendedIngredients.map((ingredient: { amount: number; unit: string; name: string }, index: number) => (
             <View key={index} style={styles.ingredientItem}>
               <MaterialIcons name="check-circle" size={20} color="#4CAF50" />
               <Text style={styles.ingredientText}>
@@ -181,7 +180,7 @@ const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({ route, naviga
         {/* Instructions */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Instructions</Text>
-          {recipe.analyzedInstructions[0]?.steps.map((step, index) => (
+          {recipe.analyzedInstructions[0]?.steps.map((step: { number: number; step: string }, index: number) => (
             <View key={index} style={styles.instructionItem}>
               <View style={styles.stepNumber}>
                 <Text style={styles.stepNumberText}>{step.number}</Text>
@@ -196,7 +195,7 @@ const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({ route, naviga
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Dietary Info</Text>
             <View style={styles.tagsContainer}>
-              {recipe.diets.map((diet, index) => (
+              {recipe.diets.map((diet: string, index: number) => (
                 <View key={index} style={styles.tag}>
                   <Text style={styles.tagText}>{diet}</Text>
                 </View>

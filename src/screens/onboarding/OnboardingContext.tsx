@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState } from 'react';
 import * as auth from '../../api/auth';
 
-export type OnboardingAnswers = {
+export interface OnboardingAnswers {
   // Signup fields
   name?: string;
   email?: string;
@@ -10,10 +10,15 @@ export type OnboardingAnswers = {
   // Quiz fields
   cuisines: string[];
   diets: string[];
-  recipeTypes: string[];
   allergies: string[];
   allergyOther?: string;
-};
+}
+
+interface OnboardingContextType {
+  answers: OnboardingAnswers;
+  setAnswers: React.Dispatch<React.SetStateAction<OnboardingAnswers>>;
+  submitOnboardingProfile: (answers: OnboardingAnswers) => Promise<void>;
+}
 
 const defaultAnswers: OnboardingAnswers = {
   name: '',
@@ -22,45 +27,33 @@ const defaultAnswers: OnboardingAnswers = {
   birthday: '',
   cuisines: [],
   diets: [],
-  recipeTypes: [],
   allergies: [],
   allergyOther: '',
 };
 
-const OnboardingContext = createContext<{
-  answers: OnboardingAnswers;
-  setAnswers: React.Dispatch<React.SetStateAction<OnboardingAnswers>>;
-  submitOnboardingProfile: (answers: OnboardingAnswers) => Promise<void>;
-}>({
+const OnboardingContext = createContext<OnboardingContextType>({
   answers: defaultAnswers,
   setAnswers: () => {},
   submitOnboardingProfile: async () => {},
 });
 
-export const useOnboarding = () => useContext(OnboardingContext);
+export const useOnboarding = () => {
+  const context = useContext(OnboardingContext);
+  if (!context) {
+    throw new Error('useOnboarding must be used within an OnboardingProvider');
+  }
+  return context;
+};
 
 export const OnboardingProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [answers, setAnswers] = useState<OnboardingAnswers>(defaultAnswers);
 
   const submitOnboardingProfile = async (profile: OnboardingAnswers) => {
     try {
-      // Extract only the preferences-related fields
-      const preferences = {
-        cuisines: profile.cuisines || [],
-        diets: profile.diets || [],
-        recipeTypes: profile.recipeTypes || [],
-        allergies: profile.allergies || [],
-        allergyOther: profile.allergyOther || '',
-      };
-
-      // Update user preferences in the backend
-      await auth.updatePreferences(preferences);
-    } catch (error: any) {
-      console.error('Error submitting onboarding profile:', error);
-      if (error.response?.data?.error) {
-        throw new Error(error.response.data.error);
-      } else if (error.message) {
-        throw new Error(error.message);
+      await auth.updatePreferences(profile);
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
       } else {
         throw new Error('Failed to update preferences. Please try again.');
       }

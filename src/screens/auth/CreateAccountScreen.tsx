@@ -97,7 +97,6 @@ const CreateAccountScreen = () => {
         birthday: formData.birthday,
         cuisines: [],
         diets: [],
-        recipeTypes: [],
         allergies: [],
         allergyOther: '',
       });
