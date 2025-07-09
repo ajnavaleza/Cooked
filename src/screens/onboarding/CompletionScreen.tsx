@@ -1,21 +1,46 @@
-import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { styles } from '../../styles/onboarding/CompletionScreen.styles';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useOnboarding } from './OnboardingContext';
+import API from '../../api';
 
 const CompletionScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const { answers } = useOnboarding();
+  const [isSaving, setIsSaving] = useState(false);
 
-  const handleContinue = () => {
-    // Here you would typically save the preferences to your backend
-    // For now, we'll just navigate to the main app
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'MainApp' }],
-    });
+  const handleContinue = async () => {
+    try {
+      setIsSaving(true);
+      
+      // Transform answers into preferences format
+      const preferences = {
+        cuisines: answers.cuisines || [],
+        diets: answers.diets || [],
+        recipeTypes: answers.recipeTypes || [],
+        allergies: answers.allergies || [],
+        allergyOther: answers.allergyOther || '',
+      };
+
+      // Save preferences to backend
+      await API.put('/api/user/preferences', { preferences });
+
+      // Navigate to main app
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'MainApp' }],
+      });
+    } catch (error: any) {
+      console.error('Error saving preferences:', error);
+      Alert.alert(
+        'Error',
+        error.response?.data?.error || 'Failed to save preferences. Please try again.'
+      );
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -25,8 +50,16 @@ const CompletionScreen = () => {
         <Text style={styles.description}>
           Your preferences help us personalize your Cooked experience, from recipe suggestions to meal ideas tailored just for you.
         </Text>
-        <TouchableOpacity style={styles.button} onPress={handleContinue}>
-          <Text style={styles.buttonText}>Let's get cooking!</Text>
+        <TouchableOpacity 
+          style={[styles.button, isSaving && styles.buttonDisabled]} 
+          onPress={handleContinue}
+          disabled={isSaving}
+        >
+          {isSaving ? (
+            <ActivityIndicator color="#FFF" />
+          ) : (
+            <Text style={styles.buttonText}>Let's get cooking!</Text>
+          )}
         </TouchableOpacity>
       </View>
     </View>

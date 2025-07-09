@@ -57,7 +57,7 @@ const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({ route, naviga
 
   const checkIfRecipeIsSaved = async () => {
     try {
-      const response = await API.get('/user/recipes/saved');
+      const response = await API.get('/api/user/recipes/saved');
       const savedRecipes = response.data;
       setIsSaved(savedRecipes.some((recipe: any) => recipe.recipeId === recipeId.toString()));
     } catch (error) {
@@ -69,17 +69,17 @@ const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({ route, naviga
     try {
       setIsSaving(true);
       if (isSaved) {
-        await API.delete(`/user/recipes/save/${recipeId}`);
+        await API.delete(`/api/user/recipes/save/${recipeId}`);
         setIsSaved(false);
         Alert.alert('Success', 'Recipe removed from saved recipes');
       } else {
-        await API.post('/recipes/save', { recipeId: recipeId.toString() });
+        await API.post('/api/user/recipes/save', { recipeId: recipeId.toString() });
         setIsSaved(true);
         Alert.alert('Success', 'Recipe saved successfully');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving recipe:', error);
-      Alert.alert('Error', 'Failed to save recipe. Please try again.');
+      Alert.alert('Error', error.response?.data?.error || 'Failed to save recipe. Please try again.');
     } finally {
       setIsSaving(false);
     }
@@ -114,6 +114,13 @@ const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({ route, naviga
         >
           <MaterialIcons name="arrow-back" size={24} color="#FFF" />
         </TouchableOpacity>
+      </View>
+
+      {/* Recipe Info */}
+      <View style={styles.contentContainer}>
+        <Text style={styles.title}>{recipe.title}</Text>
+        
+        {/* Save Button */}
         <TouchableOpacity 
           style={[styles.saveButton, isSaved && styles.savedButton]}
           onPress={handleSaveRecipe}
@@ -122,14 +129,12 @@ const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({ route, naviga
           <MaterialIcons 
             name={isSaved ? "bookmark" : "bookmark-border"} 
             size={24} 
-            color="#FFF" 
+            color={isSaved ? "#FFF" : "#666"} 
           />
+          <Text style={[styles.saveButtonText, isSaved && styles.savedButtonText]}>
+            {isSaved ? 'Saved' : 'Save Recipe'}
+          </Text>
         </TouchableOpacity>
-      </View>
-
-      {/* Recipe Info */}
-      <View style={styles.contentContainer}>
-        <Text style={styles.title}>{recipe.title}</Text>
 
         {/* Metrics */}
         <View style={styles.metricsContainer}>
@@ -249,18 +254,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   saveButton: {
-    position: 'absolute',
-    top: STATUS_BAR_HEIGHT + 10,
-    right: 16,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#F5F5F5',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 12,
+    marginBottom: 24,
+    gap: 8,
   },
   savedButton: {
-    backgroundColor: 'rgba(255, 107, 107, 0.8)',
+    backgroundColor: '#FF6B6B',
+  },
+  saveButtonText: {
+    fontSize: 16,
+    color: '#666',
+    fontFamily: typography.fonts.medium,
+  },
+  savedButtonText: {
+    color: '#FFF',
   },
   contentContainer: {
     flex: 1,
