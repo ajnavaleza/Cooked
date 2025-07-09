@@ -1,45 +1,22 @@
 import { spoonacularApi, transformSpoonacularRecipe, SpoonacularRecipe } from './spoonacular';
-import axios, { AxiosInstance } from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { API_CONFIG } from '../config/api';
+import API from './index';
 
 // Recipe types
 export interface Recipe {
   id: string;
   title: string;
   image: string;
-  servings: number;
-  readyInMinutes: number;
+  servingSize: number;
+  minutes: number;
   difficulty: 'Easy' | 'Medium' | 'Advanced';
   description: string;
-  summary?: string;
   cuisines?: string[];
   dishTypes?: string[];
   diets?: string[];
   healthScore?: number;
   likes?: number;
-  extendedIngredients?: Array<{
-    id: number;
-    name: string;
-    amount: number;
-    unit: string;
-    originalString: string;
-  }>;
-  analyzedInstructions?: Array<{
-    name: string;
-    steps: Array<{
-      number: number;
-      step: string;
-      ingredients?: Array<{
-        id: number;
-        name: string;
-      }>;
-      equipment?: Array<{
-        id: number;
-        name: string;
-      }>;
-    }>;
-  }>;
+  instructions?: any[];
+  ingredients?: any[];
   nutrition?: any;
   source: 'spoonacular' | 'local';
 }
@@ -62,25 +39,10 @@ export interface PaginatedRecipes {
   hasMore: boolean;
 }
 
-class RecipeAPI {
+class RecipeService {
   private cache: Map<string, Recipe[]> = new Map();
   private cacheTimeout = 5 * 60 * 1000;
   private cacheTimestamps: Map<string, number> = new Map();
-  protected api: AxiosInstance;
-
-  constructor() {
-    this.api = axios.create({
-      baseURL: API_CONFIG.LOCAL_API_BASE_URL,
-    });
-
-    this.api.interceptors.request.use(async (config) => {
-      const token = await AsyncStorage.getItem('token');
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-      return config;
-    });
-  }
 
   private isCacheValid(key: string): boolean {
     const timestamp = this.cacheTimestamps.get(key);
@@ -289,8 +251,8 @@ class RecipeAPI {
               id: recipe.id.toString(),
               title: recipe.title,
               image: recipe.image,
-              servings: 4,
-              readyInMinutes: 30,
+              servingSize: 4,
+              minutes: 30,
               difficulty: 'Medium' as const,
               description: `Recipe using ${recipe.usedIngredientCount} of your ingredients`,
               likes: recipe.likes,
@@ -323,7 +285,7 @@ class RecipeAPI {
   // Save user's favorite recipes
   async saveFavoriteRecipe(userId: string, recipeId: string): Promise<boolean> {
     try {
-      await this.api.post('/user/favorites', { recipeId });
+      await API.post('/user/favorites', { recipeId });
       return true;
     } catch (error) {
       return false;
@@ -333,39 +295,16 @@ class RecipeAPI {
   // Get user's favorite recipes
   async getFavoriteRecipes(userId: string): Promise<Recipe[]> {
     try {
-      const response = await this.api.get('/user/favorites');
+      const response = await API.get('/user/favorites');
       const favoriteRecipes = await Promise.all(
         response.data.favorites.map(async (recipeId: string) => {
           return await this.getRecipeById(recipeId);
         })
       );
-      return favoriteRecipes.filter((recipe: Recipe | null) => recipe !== null) as Recipe[];
+      return favoriteRecipes.filter(recipe => recipe !== null) as Recipe[];
     } catch (error) {
       return [];
     }
-  }
-
-  // Save recipe to user's saved recipes
-  async saveRecipe(recipeData: {
-    title: string;
-    difficulty: 'Easy' | 'Intermediate' | 'Advanced';
-    recipeId: string;
-    sourceType: 'spoonacular' | 'custom';
-  }) {
-    const response = await this.api.post('/user/recipes', recipeData);
-    return response.data;
-  }
-
-  // Get user's saved recipes
-  async getSavedRecipes() {
-    const response = await this.api.get('/user/recipes');
-    return response.data;
-  }
-
-  // Delete user's saved recipe
-  async deleteSavedRecipe(recipeId: string) {
-    const response = await this.api.delete(`/user/recipes/${recipeId}`);
-    return response.data;
   }
 
   // Fallback recipes
@@ -375,8 +314,8 @@ class RecipeAPI {
         id: 'fallback-1',
         title: 'Quick Pasta Salad',
         image: 'https://via.placeholder.com/300x200?text=Pasta+Salad',
-        servings: 4,
-        readyInMinutes: 15,
+        servingSize: 4,
+        minutes: 15,
         difficulty: 'Easy' as const,
         description: 'A simple and delicious pasta salad perfect for students.',
         source: 'local' as const,
@@ -385,8 +324,8 @@ class RecipeAPI {
         id: 'fallback-2',
         title: 'Microwave Mac and Cheese',
         image: 'https://via.placeholder.com/300x200?text=Mac+and+Cheese',
-        servings: 1,
-        readyInMinutes: 5,
+        servingSize: 1,
+        minutes: 5,
         difficulty: 'Easy' as const,
         description: 'Quick and easy mac and cheese made in the microwave.',
         source: 'local' as const,
@@ -395,8 +334,8 @@ class RecipeAPI {
         id: 'fallback-3',
         title: 'Peanut Butter Sandwich',
         image: 'https://via.placeholder.com/300x200?text=PB+Sandwich',
-        servings: 1,
-        readyInMinutes: 3,
+        servingSize: 1,
+        minutes: 3,
         difficulty: 'Easy' as const,
         description: 'Classic peanut butter and jelly sandwich.',
         source: 'local' as const,
@@ -417,5 +356,5 @@ class RecipeAPI {
   }
 }
 
-export const recipeApi = new RecipeAPI();
-export default recipeApi; 
+export const recipeService = new RecipeService();
+export default recipeService; 

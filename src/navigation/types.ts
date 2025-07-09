@@ -1,4 +1,4 @@
-import { NavigatorScreenParams } from '@react-navigation/native';
+import type { OnboardingStackParamList } from '../screens/onboarding/OnboardingNavigator';
 
 interface UserPreferences {
   cuisines?: string[];
@@ -9,22 +9,25 @@ interface UserPreferences {
 }
 
 export type MainStackParamList = {
-  MainTabs: NavigatorScreenParams<MainTabParamList>;
-  RecipeDetails: { recipeId: string };
+  MainTabs: undefined;
+  RecipeDetails: {
+    recipeId: number;
+  };
 };
 
 export type ProfileStackParamList = {
   ProfileMain: undefined;
-  EditPreferences: undefined;
-  EditProfile: undefined;
-};
-
-export type MainTabParamList = {
-  Home: undefined;
-  Explore: undefined;
-  'My Recipes': undefined;
-  Profile: undefined;
-  RecipeDetails: { recipeId: string };
+  EditPreferences: {
+    currentPreferences: UserPreferences;
+    onSave: (preferences: UserPreferences) => void;
+  };
+  EditProfile: {
+    currentProfile: {
+      name?: string;
+      birthday?: string;
+    };
+    onSave: (profile: { name?: string; birthday?: string }) => void;
+  };
 };
 
 export type RootStackParamList = {

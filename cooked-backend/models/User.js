@@ -11,7 +11,11 @@ const UserSchema = new mongoose.Schema({
     recipeTypes: [String],
     allergies: [String],
     allergyOther: String,
-  }
+  },
+  savedRecipes: [{
+    recipeId: { type: String, required: true },
+    savedAt: { type: Date, default: Date.now }
+  }]
 });
 
 module.exports = mongoose.model('User', UserSchema); 
