@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { spoonacularApi, SpoonacularRecipe } from '../../api/spoonacular';
+import { recipeApi } from '../../api/recipes';
 import { typography } from '../../styles/typography';
 
 const { width } = Dimensions.get('window');
@@ -31,6 +32,7 @@ const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({ route, naviga
   const { recipeId } = route.params;
   const [recipe, setRecipe] = useState<SpoonacularRecipe | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSaved, setIsSaved] = useState(false);
 
   useEffect(() => {
     fetchRecipeDetails();
@@ -48,6 +50,35 @@ const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({ route, naviga
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleSaveRecipe = async () => {
+    try {
+      if (!isSaved) {
+        await recipeApi.saveRecipe({
+          title: recipe?.title || '',
+          difficulty: getDifficultyLevel(recipe),
+          recipeId: recipe?.id?.toString() || '',
+          sourceType: 'spoonacular'
+        });
+        setIsSaved(true);
+      } else {
+        await recipeApi.deleteSavedRecipe(recipe?.id?.toString() || '');
+        setIsSaved(false);
+      }
+    } catch (error) {
+      console.error('Error saving recipe:', error);
+    }
+  };
+
+  const getDifficultyLevel = (recipe: SpoonacularRecipe | null) => {
+    // Simple algorithm to determine difficulty based on recipe properties
+    const complexity = recipe?.extendedIngredients?.length || 0;
+    const timeRequired = recipe?.readyInMinutes || 0;
+    
+    if (complexity > 10 || timeRequired > 60) return 'Advanced';
+    if (complexity > 5 || timeRequired > 30) return 'Intermediate';
+    return 'Easy';
   };
 
   if (isLoading) {
@@ -73,12 +104,21 @@ const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({ route, naviga
       {/* Header Image */}
       <View style={styles.imageContainer}>
         <Image source={{ uri: recipe.image }} style={styles.image} />
-        <TouchableOpacity 
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
-          <MaterialIcons name="arrow-back" size={24} color="#FFF" />
-        </TouchableOpacity>
+        <View style={styles.header}>
+          <TouchableOpacity 
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}
+          >
+            <MaterialIcons name="arrow-back" size={24} color="#FFF" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleSaveRecipe} style={styles.saveButton}>
+            <MaterialCommunityIcons 
+              name={isSaved ? "bookmark" : "bookmark-outline"} 
+              size={24} 
+              color="#FFF" 
+            />
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Recipe Info */}
@@ -201,6 +241,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+  },
+  saveButton: {
+    padding: 8,
   },
   contentContainer: {
     flex: 1,

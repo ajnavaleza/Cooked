@@ -10,24 +10,20 @@ interface UserPreferences {
 
 export type MainStackParamList = {
   MainTabs: undefined;
-  RecipeDetails: {
-    recipeId: number;
-  };
+  RecipeDetails: { recipeId: string };
 };
 
 export type ProfileStackParamList = {
   ProfileMain: undefined;
-  EditPreferences: {
-    currentPreferences: UserPreferences;
-    onSave: (preferences: UserPreferences) => void;
-  };
-  EditProfile: {
-    currentProfile: {
-      name?: string;
-      birthday?: string;
-    };
-    onSave: (profile: { name?: string; birthday?: string }) => void;
-  };
+  EditPreferences: undefined;
+  EditProfile: undefined;
+};
+
+export type MainTabParamList = {
+  Home: undefined;
+  Explore: undefined;
+  'My Recipes': undefined;
+  Profile: undefined;
 };
 
 export type RootStackParamList = {

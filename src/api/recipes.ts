@@ -39,7 +39,7 @@ export interface PaginatedRecipes {
   hasMore: boolean;
 }
 
-class RecipeService {
+class RecipeAPI extends API {
   private cache: Map<string, Recipe[]> = new Map();
   private cacheTimeout = 5 * 60 * 1000;
   private cacheTimestamps: Map<string, number> = new Map();
@@ -285,7 +285,7 @@ class RecipeService {
   // Save user's favorite recipes
   async saveFavoriteRecipe(userId: string, recipeId: string): Promise<boolean> {
     try {
-      await API.post('/user/favorites', { recipeId });
+      await this.api.post('/user/favorites', { recipeId });
       return true;
     } catch (error) {
       return false;
@@ -295,7 +295,7 @@ class RecipeService {
   // Get user's favorite recipes
   async getFavoriteRecipes(userId: string): Promise<Recipe[]> {
     try {
-      const response = await API.get('/user/favorites');
+      const response = await this.api.get('/user/favorites');
       const favoriteRecipes = await Promise.all(
         response.data.favorites.map(async (recipeId: string) => {
           return await this.getRecipeById(recipeId);
@@ -305,6 +305,29 @@ class RecipeService {
     } catch (error) {
       return [];
     }
+  }
+
+  // Save recipe to user's saved recipes
+  async saveRecipe(recipeData: {
+    title: string;
+    difficulty: 'Easy' | 'Intermediate' | 'Advanced';
+    recipeId: string;
+    sourceType: 'spoonacular' | 'custom';
+  }) {
+    const response = await this.api.post('/user/recipes', recipeData);
+    return response.data;
+  }
+
+  // Get user's saved recipes
+  async getSavedRecipes() {
+    const response = await this.api.get('/user/recipes');
+    return response.data;
+  }
+
+  // Delete user's saved recipe
+  async deleteSavedRecipe(recipeId: string) {
+    const response = await this.api.delete(`/user/recipes/${recipeId}`);
+    return response.data;
   }
 
   // Fallback recipes
@@ -356,5 +379,5 @@ class RecipeService {
   }
 }
 
-export const recipeService = new RecipeService();
-export default recipeService; 
+export const recipeApi = new RecipeAPI();
+export default recipeApi; 

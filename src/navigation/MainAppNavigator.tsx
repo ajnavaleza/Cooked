@@ -1,178 +1,21 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Ionicons } from '@expo/vector-icons';
-import { View, Text, ActivityIndicator, StyleSheet, Platform } from 'react-native';
-import type { ProfileStackParamList, MainStackParamList } from './types';
-import { typography } from '../styles/typography';
-
-// Lazy load screens
-const HomeScreen = React.lazy(() => import('../screens/main/HomeScreen'));
-const ExploreScreen = React.lazy(() => import('../screens/main/ExploreScreen'));
-const RecipesScreen = React.lazy(() => import('../screens/main/RecipesScreen'));
-const ProfileScreen = React.lazy(() => import('../screens/main/ProfileScreen'));
-const EditPreferencesScreen = React.lazy(() => import('../screens/main/EditPreferencesScreen'));
-const EditProfileScreen = React.lazy(() => import('../screens/main/EditProfileScreen'));
-const RecipeDetailsScreen = React.lazy(() => import('../screens/main/RecipeDetailsScreen'));
+import HomeScreen from '../screens/main/HomeScreen';
+import ExploreScreen from '../screens/main/ExploreScreen';
+import ProfileScreen from '../screens/main/ProfileScreen';
+import SavedRecipesScreen from '../screens/main/SavedRecipesScreen';
 
 const Tab = createBottomTabNavigator();
-const ProfileStack = createNativeStackNavigator<ProfileStackParamList>();
-const MainStack = createNativeStackNavigator<MainStackParamList>();
-
-// Loading component for lazy loaded screens
-const LoadingScreen = () => (
-  <View style={styles.loadingContainer}>
-    <ActivityIndicator size="large" color="#C84B31" />
-    <Text style={styles.loadingText}>Loading...</Text>
-  </View>
-);
-
-// Wrapper component for lazy loaded screens
-const LazyScreen = ({ component: Component, ...props }: any) => (
-  <Suspense fallback={<LoadingScreen />}>
-    <Component {...props} />
-  </Suspense>
-);
-
-// Profile Stack Navigator
-const ProfileStackNavigator = () => (
-  <ProfileStack.Navigator 
-    screenOptions={{
-      headerShown: false,
-      presentation: 'card',
-      animation: Platform.OS === 'ios' ? 'default' : 'fade',
-      contentStyle: { backgroundColor: '#FFFFFF' },
-    }}
-  >
-    <ProfileStack.Screen
-      name="ProfileMain"
-      children={(props) => <LazyScreen component={ProfileScreen} {...props} />}
-      options={{
-        gestureEnabled: true,
-      }}
-    />
-    <ProfileStack.Screen
-      name="EditPreferences"
-      children={(props) => <LazyScreen component={EditPreferencesScreen} {...props} />}
-      options={{
-        gestureEnabled: false,
-        contentStyle: { backgroundColor: '#FFFFFF' },
-      }}
-    />
-    <ProfileStack.Screen
-      name="EditProfile"
-      children={(props) => <LazyScreen component={EditProfileScreen} {...props} />}
-      options={{
-        gestureEnabled: false,
-        contentStyle: { backgroundColor: '#FFFFFF' },
-      }}
-    />
-  </ProfileStack.Navigator>
-);
-
-// Tab Navigator
-const TabNavigator = () => {
-  return (
-    <Tab.Navigator
-      screenOptions={{
-        tabBarStyle: {
-          backgroundColor: '#C84B31',
-          borderTopWidth: 0,
-          elevation: 0,
-          shadowOpacity: 0,
-          height: Platform.OS === 'ios' ? 95 : 90,
-          paddingBottom: Platform.OS === 'ios' ? 30 : 25,
-          paddingTop: 10,
-          marginBottom: 0,
-        },
-        tabBarActiveTintColor: '#FFFFFF',
-        tabBarInactiveTintColor: 'rgba(255, 255, 255, 0.7)',
-        tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: '500',
-          marginTop: 5,
-          fontFamily: typography.fonts.medium,
-        },
-        headerShown: false,
-      }}
-    >
-      <Tab.Screen
-        name="Home"
-        children={(props) => <LazyScreen component={HomeScreen} {...props} />}
-        options={{
-          tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons name={focused ? "home" : "home-outline"} size={size} color={color} />
-          ),
-          tabBarLabel: () => null,
-        }}
-      />
-      <Tab.Screen
-        name="Explore"
-        children={(props) => <LazyScreen component={ExploreScreen} {...props} />}
-        options={{
-          tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons name={focused ? "grid" : "grid-outline"} size={size} color={color} />
-          ),
-          tabBarLabel: () => null,
-        }}
-      />
-      <Tab.Screen
-        name="Recipes"
-        children={(props) => <LazyScreen component={RecipesScreen} {...props} />}
-        options={{
-          tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons name={focused ? "book" : "book-outline"} size={size} color={color} />
-          ),
-          tabBarLabel: () => null,
-        }}
-      />
-      <Tab.Screen
-        name="Profile"
-        component={ProfileStackNavigator}
-        options={{
-          tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons name={focused ? "person" : "person-outline"} size={size} color={color} />
-          ),
-          tabBarLabel: () => null,
-        }}
-      />
-    </Tab.Navigator>
-  );
-};
 
 const MainAppNavigator = () => {
   return (
-    <MainStack.Navigator
-      screenOptions={{
-        headerShown: false,
-        presentation: 'card',
-        animation: Platform.OS === 'ios' ? 'default' : 'fade',
-      }}
-    >
-      <MainStack.Screen name="MainTabs" component={TabNavigator} />
-      <MainStack.Screen
-        name="RecipeDetails"
-        children={(props) => <LazyScreen component={RecipeDetailsScreen} {...props} />}
-        options={{
-          animation: 'slide_from_right',
-        }}
-      />
-    </MainStack.Navigator>
+    <Tab.Navigator>
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Explore" component={ExploreScreen} />
+      <Tab.Screen name="My Recipes" component={SavedRecipesScreen} />
+      <Tab.Screen name="Profile" component={ProfileScreen} />
+    </Tab.Navigator>
   );
 };
-
-const styles = StyleSheet.create({
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    marginTop: 10,
-    fontSize: 16,
-    color: '#666',
-    fontFamily: typography.fonts.regular,
-  },
-});
 
 export default MainAppNavigator; 

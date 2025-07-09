@@ -1,59 +1,65 @@
 const express = require('express');
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
 const router = express.Router();
+const User = require('../models/User');
+const Recipe = require('../models/Recipe');
+const auth = require('../middleware/auth');
 
-function auth(req, res, next) {
-  const token = req.header('Authorization')?.replace('Bearer ', '');
-  if (!token) return res.status(401).json({ error: 'No token' });
+// Get user's saved recipes
+router.get('/recipes', auth, async (req, res) => {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
-    next();
-  } catch {
-    res.status(401).json({ error: 'Invalid token' });
-  }
-}
-
-router.get('/me', auth, async (req, res) => {
-  const user = await User.findById(req.user.id).select('-password');
-  res.json(user);
-});
-
-router.put('/preferences', auth, async (req, res) => {
-  try {
-    if (!req.body.preferences) {
-      return res.status(400).json({ error: 'No preferences provided' });
-    }
-
-    const userBefore = await User.findById(req.user.id);
-    if (!userBefore) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    const user = await User.findByIdAndUpdate(
-      req.user.id,
-      { preferences: req.body.preferences },
-      { new: true }
-    );
-
-    res.json(user);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-router.put('/me/profile', auth, async (req, res) => {
-  const { name, birthday } = req.body;
-  try {
-    const user = await User.findByIdAndUpdate(
-      req.user.id,
-      { name, birthday },
-      { new: true }
-    ).select('-password');
-    res.json(user);
+    const recipes = await Recipe.find({ userId: req.user.id }).sort({ savedDate: -1 });
+    res.json(recipes);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).send('Server Error');
+  }
+});
+
+// Save a recipe
+router.post('/recipes', auth, async (req, res) => {
+  try {
+    const { title, difficulty, recipeId, sourceType } = req.body;
+    
+    // Check if recipe already saved
+    const existingRecipe = await Recipe.findOne({ 
+      userId: req.user.id,
+      recipeId: recipeId
+    });
+
+    if (existingRecipe) {
+      return res.status(400).json({ msg: 'Recipe already saved' });
+    }
+
+    const recipe = new Recipe({
+      title,
+      difficulty,
+      recipeId,
+      sourceType,
+      userId: req.user.id
+    });
+
+    await recipe.save();
+    res.json(recipe);
+  } catch (err) {
+    res.status(500).send('Server Error');
+  }
+});
+
+// Delete a saved recipe
+router.delete('/recipes/:id', auth, async (req, res) => {
+  try {
+    const recipe = await Recipe.findOne({ 
+      _id: req.params.id,
+      userId: req.user.id
+    });
+
+    if (!recipe) {
+      return res.status(404).json({ msg: 'Recipe not found' });
+    }
+
+    await recipe.remove();
+    res.json({ msg: 'Recipe removed' });
+  } catch (err) {
+    res.status(500).send('Server Error');
   }
 });
 
