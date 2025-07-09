@@ -8,7 +8,8 @@ export const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   title: {
-    ...typography.h1,
+    fontFamily: typography.fonts.semiBold,
+    fontSize: typography.sizes.xl,
     marginBottom: 16,
     color: '#2D2D2D',
   },
@@ -37,12 +38,13 @@ export const styles = StyleSheet.create({
     elevation: 3,
   },
   tabText: {
-    ...typography.body2,
+    fontFamily: typography.fonts.regular,
+    fontSize: typography.sizes.md,
     color: '#666666',
   },
   activeTabText: {
     color: '#C84B31',
-    fontFamily: typography.fonts.semibold,
+    fontFamily: typography.fonts.semiBold,
   },
   listContainer: {
     paddingBottom: 16,
@@ -68,7 +70,8 @@ export const styles = StyleSheet.create({
     marginBottom: 8,
   },
   recipeTitle: {
-    ...typography.h3,
+    fontFamily: typography.fonts.semiBold,
+    fontSize: typography.sizes.lg,
     flex: 1,
     marginRight: 12,
     color: '#2D2D2D',
@@ -79,8 +82,8 @@ export const styles = StyleSheet.create({
     borderRadius: 16,
   },
   difficultyText: {
-    ...typography.caption,
     fontFamily: typography.fonts.medium,
+    fontSize: typography.sizes.sm,
   },
   easyText: {
     color: '#4CAF50',
@@ -92,7 +95,8 @@ export const styles = StyleSheet.create({
     color: '#F44336',
   },
   dateText: {
-    ...typography.caption,
+    fontFamily: typography.fonts.regular,
+    fontSize: typography.sizes.sm,
     color: '#666666',
   },
 }); 

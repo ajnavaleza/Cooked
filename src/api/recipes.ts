@@ -1,5 +1,7 @@
 import { spoonacularApi, transformSpoonacularRecipe, SpoonacularRecipe } from './spoonacular';
-import API from './index';
+import axios, { AxiosInstance } from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_CONFIG } from '../config/api';
 
 // Recipe types
 export interface Recipe {
@@ -39,10 +41,25 @@ export interface PaginatedRecipes {
   hasMore: boolean;
 }
 
-class RecipeAPI extends API {
+class RecipeAPI {
   private cache: Map<string, Recipe[]> = new Map();
   private cacheTimeout = 5 * 60 * 1000;
   private cacheTimestamps: Map<string, number> = new Map();
+  protected api: AxiosInstance;
+
+  constructor() {
+    this.api = axios.create({
+      baseURL: API_CONFIG.LOCAL_API_BASE_URL,
+    });
+
+    this.api.interceptors.request.use(async (config) => {
+      const token = await AsyncStorage.getItem('token');
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+      return config;
+    });
+  }
 
   private isCacheValid(key: string): boolean {
     const timestamp = this.cacheTimestamps.get(key);
@@ -301,7 +318,7 @@ class RecipeAPI extends API {
           return await this.getRecipeById(recipeId);
         })
       );
-      return favoriteRecipes.filter(recipe => recipe !== null) as Recipe[];
+      return favoriteRecipes.filter((recipe: Recipe | null) => recipe !== null) as Recipe[];
     } catch (error) {
       return [];
     }
