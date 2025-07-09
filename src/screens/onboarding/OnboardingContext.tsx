@@ -56,7 +56,14 @@ export const OnboardingProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       // Update user preferences in the backend
       await auth.updatePreferences(preferences);
     } catch (error: any) {
-      throw new Error(error.response?.data?.error || 'Failed to update preferences');
+      console.error('Error submitting onboarding profile:', error);
+      if (error.response?.data?.error) {
+        throw new Error(error.response.data.error);
+      } else if (error.message) {
+        throw new Error(error.message);
+      } else {
+        throw new Error('Failed to update preferences. Please try again.');
+      }
     }
   };
 

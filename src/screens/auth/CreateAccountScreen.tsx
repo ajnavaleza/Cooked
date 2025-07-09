@@ -87,11 +87,8 @@ const CreateAccountScreen = () => {
 
     try {
       setIsLoading(true);
-      // Register the user
-      await auth.register(formData.email, formData.password, formData.name, formData.birthday);
-      
-      // If registration successful, login
-      const response = await auth.login(formData.email, formData.password);
+      // Register the user and get token and user data
+      const response = await auth.register(formData.email, formData.password, formData.name, formData.birthday);
       
       // Reset onboarding context with only the new user's basic info
       setAnswers({ 
@@ -108,6 +105,7 @@ const CreateAccountScreen = () => {
       // Navigate to onboarding
       navigation.navigate('Onboarding', { screen: 'Cuisines' });
     } catch (error: any) {
+      console.error('Registration error:', error);
       Alert.alert(
         'Registration Failed',
         error.response?.data?.error || 'Something went wrong. Please try again.'

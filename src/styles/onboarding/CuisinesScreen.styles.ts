@@ -21,6 +21,7 @@ const styles = StyleSheet.create({
   submitText: { color: '#FFF', fontSize: 18, fontWeight: 'bold' },
   skipButton: { paddingVertical: 10, paddingHorizontal: 16 },
   skipText: { color: '#A9BEE8', fontSize: 16, textDecorationLine: 'underline', marginBottom: 8},
+  buttonDisabled: { opacity: 0.5 },
 });
 
 export default styles; 

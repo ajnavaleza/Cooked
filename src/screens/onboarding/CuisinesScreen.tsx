@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Alert, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useOnboarding } from './OnboardingContext';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -48,9 +48,10 @@ const CuisinesScreen = () => {
       await submitOnboardingProfile({ ...answers, cuisines: selected });
       navigation.navigate('Diets');
     } catch (error: any) {
+      console.error('Submit error:', error);
       Alert.alert(
         'Error',
-        'Failed to save your preferences. Please try again.'
+        error.message || 'Failed to save your preferences. Please try again.'
       );
     } finally {
       setIsLoading(false);
@@ -68,9 +69,10 @@ const CuisinesScreen = () => {
       await submitOnboardingProfile({ ...answers, cuisines: ['Any'] });
       navigation.navigate('Diets');
     } catch (error: any) {
+      console.error('Skip error:', error);
       Alert.alert(
         'Error',
-        'Failed to save your preferences. Please try again.'
+        error.message || 'Failed to save your preferences. Please try again.'
       );
     } finally {
       setIsLoading(false);
@@ -98,6 +100,7 @@ const CuisinesScreen = () => {
               key={c.label}
               style={[styles.checkboxRow, selected.includes(c.label) && styles.selectedRow]}
               onPress={() => toggleCuisine(c.label)}
+              disabled={isLoading}
             >
               <View style={[styles.checkbox, selected.includes(c.label) && styles.checkedBox]} />
               <Text style={styles.optionText}>{c.label} {c.emoji}</Text>
@@ -105,10 +108,22 @@ const CuisinesScreen = () => {
           ))}
         </ScrollView>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-            <Text style={styles.submitText}>Submit</Text>
+          <TouchableOpacity 
+            style={[styles.submitButton, isLoading && styles.buttonDisabled]} 
+            onPress={handleSubmit}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <ActivityIndicator color="#FFF" size="small" />
+            ) : (
+              <Text style={styles.submitText}>Submit</Text>
+            )}
           </TouchableOpacity>
-          <TouchableOpacity style={styles.skipButton} onPress={handleSkip}>
+          <TouchableOpacity 
+            style={[styles.skipButton, isLoading && styles.buttonDisabled]} 
+            onPress={handleSkip}
+            disabled={isLoading}
+          >
             <Text style={styles.skipText}>Skip</Text>
           </TouchableOpacity>
         </View>
