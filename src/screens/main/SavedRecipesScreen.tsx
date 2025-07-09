@@ -7,7 +7,7 @@ import Screen from '../../components/Screen';
 import { styles } from '../../styles/main/SavedRecipesScreen.styles';
 import { MainStackParamList } from '../../navigation/types';
 
-interface Recipe {
+interface SavedRecipe {
   id: string;
   title: string;
   difficulty: 'Easy' | 'Intermediate' | 'Advanced';
@@ -19,7 +19,7 @@ type NavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
 const SavedRecipesScreen = () => {
   const [activeTab, setActiveTab] = useState<'all' | 'my'>('all');
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [recipes, setRecipes] = useState<SavedRecipe[]>([]);
   const navigation = useNavigation<NavigationProp>();
 
   useEffect(() => {
@@ -35,11 +35,11 @@ const SavedRecipesScreen = () => {
     }
   };
 
-  const handleRecipePress = (recipe: Recipe) => {
+  const handleRecipePress = (recipe: SavedRecipe) => {
     navigation.navigate('RecipeDetails', { recipeId: recipe.recipeId });
   };
 
-  const renderRecipeItem = ({ item }: { item: Recipe }) => {
+  const renderRecipeItem = ({ item }: { item: SavedRecipe }) => {
     const date = new Date(item.savedDate);
     const formattedDate = date.toLocaleDateString('en-US', { 
       month: 'short',

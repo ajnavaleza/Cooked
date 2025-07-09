@@ -8,17 +8,38 @@ export interface Recipe {
   id: string;
   title: string;
   image: string;
-  servingSize: number;
-  minutes: number;
+  servings: number;
+  readyInMinutes: number;
   difficulty: 'Easy' | 'Medium' | 'Advanced';
   description: string;
+  summary?: string;
   cuisines?: string[];
   dishTypes?: string[];
   diets?: string[];
   healthScore?: number;
   likes?: number;
-  instructions?: any[];
-  ingredients?: any[];
+  extendedIngredients?: Array<{
+    id: number;
+    name: string;
+    amount: number;
+    unit: string;
+    originalString: string;
+  }>;
+  analyzedInstructions?: Array<{
+    name: string;
+    steps: Array<{
+      number: number;
+      step: string;
+      ingredients?: Array<{
+        id: number;
+        name: string;
+      }>;
+      equipment?: Array<{
+        id: number;
+        name: string;
+      }>;
+    }>;
+  }>;
   nutrition?: any;
   source: 'spoonacular' | 'local';
 }
@@ -268,8 +289,8 @@ class RecipeAPI {
               id: recipe.id.toString(),
               title: recipe.title,
               image: recipe.image,
-              servingSize: 4,
-              minutes: 30,
+              servings: 4,
+              readyInMinutes: 30,
               difficulty: 'Medium' as const,
               description: `Recipe using ${recipe.usedIngredientCount} of your ingredients`,
               likes: recipe.likes,
@@ -354,8 +375,8 @@ class RecipeAPI {
         id: 'fallback-1',
         title: 'Quick Pasta Salad',
         image: 'https://via.placeholder.com/300x200?text=Pasta+Salad',
-        servingSize: 4,
-        minutes: 15,
+        servings: 4,
+        readyInMinutes: 15,
         difficulty: 'Easy' as const,
         description: 'A simple and delicious pasta salad perfect for students.',
         source: 'local' as const,
@@ -364,8 +385,8 @@ class RecipeAPI {
         id: 'fallback-2',
         title: 'Microwave Mac and Cheese',
         image: 'https://via.placeholder.com/300x200?text=Mac+and+Cheese',
-        servingSize: 1,
-        minutes: 5,
+        servings: 1,
+        readyInMinutes: 5,
         difficulty: 'Easy' as const,
         description: 'Quick and easy mac and cheese made in the microwave.',
         source: 'local' as const,
@@ -374,8 +395,8 @@ class RecipeAPI {
         id: 'fallback-3',
         title: 'Peanut Butter Sandwich',
         image: 'https://via.placeholder.com/300x200?text=PB+Sandwich',
-        servingSize: 1,
-        minutes: 3,
+        servings: 1,
+        readyInMinutes: 3,
         difficulty: 'Easy' as const,
         description: 'Classic peanut butter and jelly sandwich.',
         source: 'local' as const,

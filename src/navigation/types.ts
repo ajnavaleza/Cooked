@@ -1,4 +1,4 @@
-import type { OnboardingStackParamList } from '../screens/onboarding/OnboardingNavigator';
+import { NavigatorScreenParams } from '@react-navigation/native';
 
 interface UserPreferences {
   cuisines?: string[];
@@ -9,7 +9,7 @@ interface UserPreferences {
 }
 
 export type MainStackParamList = {
-  MainTabs: undefined;
+  MainTabs: NavigatorScreenParams<MainTabParamList>;
   RecipeDetails: { recipeId: string };
 };
 
@@ -24,6 +24,7 @@ export type MainTabParamList = {
   Explore: undefined;
   'My Recipes': undefined;
   Profile: undefined;
+  RecipeDetails: { recipeId: string };
 };
 
 export type RootStackParamList = {

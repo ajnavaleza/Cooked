@@ -1,69 +1,51 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  Image,
-  ActivityIndicator,
-  TouchableOpacity,
-  StyleSheet,
-  Dimensions,
-  Platform,
-  StatusBar,
-} from 'react-native';
-import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { spoonacularApi, SpoonacularRecipe } from '../../api/spoonacular';
-import { recipeApi } from '../../api/recipes';
+import { View, Text, TouchableOpacity, StyleSheet, Image, Dimensions, Platform, StatusBar } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { MainStackParamList } from '../../navigation/types';
+import { recipeApi, Recipe } from '../../api/recipes';
 import { typography } from '../../styles/typography';
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 
 const { width } = Dimensions.get('window');
 const STATUS_BAR_HEIGHT = Platform.OS === 'android' ? StatusBar.currentHeight || 0 : 0;
 
-interface RecipeDetailsScreenProps {
-  route: {
-    params: {
-      recipeId: number;
-    };
-  };
-  navigation: any;
-}
+type Props = NativeStackScreenProps<MainStackParamList, 'RecipeDetails'>;
 
-const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({ route, navigation }) => {
+const RecipeDetailsScreen = ({ route, navigation }: Props) => {
   const { recipeId } = route.params;
-  const [recipe, setRecipe] = useState<SpoonacularRecipe | null>(null);
+  const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaved, setIsSaved] = useState(false);
 
   useEffect(() => {
-    fetchRecipeDetails();
+    loadRecipe();
   }, [recipeId]);
 
-  const fetchRecipeDetails = async () => {
+  const loadRecipe = async () => {
     try {
-      setIsLoading(true);
-      const recipeData = await spoonacularApi.getRecipeInformation(recipeId, {
-        includeNutrition: true,
-      });
+      const recipeData = await recipeApi.getRecipeById(recipeId);
       setRecipe(recipeData);
     } catch (error) {
-      console.error('Error fetching recipe details:', error);
+      console.error('Error loading recipe:', error);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleSaveRecipe = async () => {
+    if (!recipe) return;
+    
     try {
       if (!isSaved) {
         await recipeApi.saveRecipe({
-          title: recipe?.title || '',
-          difficulty: getDifficultyLevel(recipe),
-          recipeId: recipe?.id?.toString() || '',
+          title: recipe.title,
+          difficulty: recipe.difficulty === 'Medium' ? 'Intermediate' : recipe.difficulty,
+          recipeId: recipe.id,
           sourceType: 'spoonacular'
         });
         setIsSaved(true);
       } else {
-        await recipeApi.deleteSavedRecipe(recipe?.id?.toString() || '');
+        await recipeApi.deleteSavedRecipe(recipe.id);
         setIsSaved(false);
       }
     } catch (error) {
@@ -71,47 +53,23 @@ const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({ route, naviga
     }
   };
 
-  const getDifficultyLevel = (recipe: SpoonacularRecipe | null) => {
-    // Simple algorithm to determine difficulty based on recipe properties
-    const complexity = recipe?.extendedIngredients?.length || 0;
-    const timeRequired = recipe?.readyInMinutes || 0;
-    
-    if (complexity > 10 || timeRequired > 60) return 'Advanced';
-    if (complexity > 5 || timeRequired > 30) return 'Intermediate';
-    return 'Easy';
-  };
-
-  if (isLoading) {
+  if (isLoading || !recipe) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#FF6B6B" />
-      </View>
-    );
-  }
-
-  if (!recipe) {
-    return (
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorText}>Failed to load recipe details</Text>
+        <Text>Loading...</Text>
       </View>
     );
   }
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
-      
-      {/* Header Image */}
+    <View style={styles.container}>
       <View style={styles.imageContainer}>
         <Image source={{ uri: recipe.image }} style={styles.image} />
         <View style={styles.header}>
-          <TouchableOpacity 
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}
-          >
+          <TouchableOpacity onPress={() => navigation.goBack()}>
             <MaterialIcons name="arrow-back" size={24} color="#FFF" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={handleSaveRecipe} style={styles.saveButton}>
+          <TouchableOpacity onPress={handleSaveRecipe}>
             <MaterialCommunityIcons 
               name={isSaved ? "bookmark" : "bookmark-outline"} 
               size={24} 
@@ -121,80 +79,24 @@ const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({ route, naviga
         </View>
       </View>
 
-      {/* Recipe Info */}
       <View style={styles.contentContainer}>
         <Text style={styles.title}>{recipe.title}</Text>
-
-        {/* Metrics */}
-        <View style={styles.metricsContainer}>
-          <View style={styles.metricItem}>
-            <MaterialCommunityIcons name="silverware-fork-knife" size={24} color="#666" />
-            <Text style={styles.metricValue}>{recipe.servings}</Text>
-            <Text style={styles.metricLabel}>Servings</Text>
+        <View style={styles.infoContainer}>
+          <View style={styles.infoItem}>
+            <MaterialIcons name="people" size={20} color="#666" />
+            <Text style={styles.infoText}>{recipe.servings} servings</Text>
           </View>
-          <View style={styles.metricItem}>
-            <MaterialIcons name="schedule" size={24} color="#666" />
-            <Text style={styles.metricValue}>{recipe.readyInMinutes}</Text>
-            <Text style={styles.metricLabel}>Minutes</Text>
+          <View style={styles.infoItem}>
+            <MaterialIcons name="timer" size={20} color="#666" />
+            <Text style={styles.infoText}>{recipe.readyInMinutes} mins</Text>
           </View>
-          <View style={styles.metricItem}>
-            <MaterialIcons name="local-fire-department" size={24} color="#666" />
-            <Text style={styles.metricValue}>
-              {recipe.nutrition?.nutrients.find(n => n.name === 'Calories')?.amount.toFixed(0) || '---'}
-            </Text>
-            <Text style={styles.metricLabel}>Calories</Text>
+          <View style={styles.infoItem}>
+            <MaterialIcons name="restaurant" size={20} color="#666" />
+            <Text style={styles.infoText}>{recipe.difficulty}</Text>
           </View>
         </View>
-
-        {/* Summary */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>About</Text>
-          <Text style={styles.summary}>
-            {recipe.summary.replace(/<[^>]*>/g, '')}
-          </Text>
-        </View>
-
-        {/* Ingredients */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Ingredients</Text>
-          {recipe.extendedIngredients.map((ingredient, index) => (
-            <View key={index} style={styles.ingredientItem}>
-              <MaterialIcons name="check-circle" size={20} color="#4CAF50" />
-              <Text style={styles.ingredientText}>
-                {ingredient.amount} {ingredient.unit} {ingredient.name}
-              </Text>
-            </View>
-          ))}
-        </View>
-
-        {/* Instructions */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Instructions</Text>
-          {recipe.analyzedInstructions[0]?.steps.map((step, index) => (
-            <View key={index} style={styles.instructionItem}>
-              <View style={styles.stepNumber}>
-                <Text style={styles.stepNumberText}>{step.number}</Text>
-              </View>
-              <Text style={styles.instructionText}>{step.step}</Text>
-            </View>
-          ))}
-        </View>
-
-        {/* Additional Info */}
-        {recipe.diets.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Dietary Info</Text>
-            <View style={styles.tagsContainer}>
-              {recipe.diets.map((diet, index) => (
-                <View key={index} style={styles.tag}>
-                  <Text style={styles.tagText}>{diet}</Text>
-                </View>
-              ))}
-            </View>
-          </View>
-        )}
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
@@ -207,156 +109,48 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FFF',
-  },
-  errorContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FFF',
-  },
-  errorText: {
-    fontSize: 16,
-    color: '#FF6B6B',
-    textAlign: 'center',
-    fontFamily: typography.fonts.medium,
   },
   imageContainer: {
+    height: width * 0.8,
     width: '100%',
-    height: 300,
-    position: 'relative',
   },
   image: {
     width: '100%',
     height: '100%',
-    resizeMode: 'cover',
-  },
-  backButton: {
-    position: 'absolute',
-    top: STATUS_BAR_HEIGHT + 10,
-    left: 16,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   header: {
+    position: 'absolute',
+    top: STATUS_BAR_HEIGHT,
+    left: 0,
+    right: 0,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
     padding: 16,
-  },
-  saveButton: {
-    padding: 8,
   },
   contentContainer: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#FFF',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    marginTop: -24,
   },
   title: {
-    fontSize: 24,
-    color: '#333',
-    fontFamily: typography.fonts.bold,
+    fontFamily: typography.fonts.semiBold,
+    fontSize: typography.sizes.xl,
+    color: '#2D2D2D',
     marginBottom: 16,
   },
-  metricsContainer: {
+  infoContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 24,
-    paddingVertical: 16,
-    backgroundColor: '#FFF8F3',
-    borderRadius: 12,
-  },
-  metricItem: {
-    alignItems: 'center',
-  },
-  metricValue: {
-    fontSize: 18,
-    color: '#333',
-    fontFamily: typography.fonts.semiBold,
-    marginTop: 4,
-  },
-  metricLabel: {
-    fontSize: 12,
-    color: '#666',
-    fontFamily: typography.fonts.regular,
-    marginTop: 2,
-  },
-  section: {
+    justifyContent: 'space-between',
     marginBottom: 24,
   },
-  sectionTitle: {
-    fontSize: 20,
-    color: '#333',
-    fontFamily: typography.fonts.semiBold,
-    marginBottom: 12,
+  infoItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  summary: {
-    fontSize: 14,
+  infoText: {
+    marginLeft: 8,
+    fontFamily: typography.fonts.regular,
+    fontSize: typography.sizes.md,
     color: '#666',
-    lineHeight: 22,
-    fontFamily: typography.fonts.regular,
-  },
-  ingredientItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 8,
-  },
-  ingredientText: {
-    fontSize: 14,
-    color: '#333',
-    marginLeft: 12,
-    fontFamily: typography.fonts.regular,
-  },
-  instructionItem: {
-    flexDirection: 'row',
-    marginBottom: 16,
-  },
-  stepNumber: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: '#FF6B6B',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-    marginTop: 2,
-  },
-  stepNumberText: {
-    color: '#FFF',
-    fontSize: 14,
-    fontFamily: typography.fonts.semiBold,
-  },
-  instructionText: {
-    flex: 1,
-    fontSize: 14,
-    color: '#333',
-    lineHeight: 22,
-    fontFamily: typography.fonts.regular,
-  },
-  tagsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginTop: 8,
-  },
-  tag: {
-    backgroundColor: '#FFF8F3',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-    marginRight: 8,
-    marginBottom: 8,
-  },
-  tagText: {
-    fontSize: 12,
-    color: '#FF6B6B',
-    fontFamily: typography.fonts.medium,
   },
 });
 
