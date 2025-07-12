@@ -49,7 +49,7 @@ const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({ route, naviga
       });
       setRecipe(recipeData);
     } catch (error) {
-      console.error('Error fetching recipe details:', error);
+      setRecipe(null);
     } finally {
       setIsLoading(false);
     }
@@ -60,7 +60,7 @@ const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({ route, naviga
       const saved = await recipeService.isRecipeSaved(recipeId);
       setIsSaved(saved);
     } catch (error) {
-      console.error('Error checking saved recipe status:', error);
+      setIsSaved(false);
     }
   };
 
@@ -77,8 +77,7 @@ const RecipeDetailsScreen: React.FC<RecipeDetailsScreenProps> = ({ route, naviga
         Alert.alert('Success', 'Recipe saved successfully');
       }
     } catch (error: any) {
-      console.error('Error saving recipe:', error);
-      Alert.alert('Error', error.response?.data?.error || 'Failed to save recipe. Please try again.');
+      Alert.alert('Error', 'Failed to save recipe. Please try again.');
     } finally {
       setIsSaving(false);
     }

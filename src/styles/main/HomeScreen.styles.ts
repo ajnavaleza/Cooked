@@ -15,41 +15,46 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   hero: {
-    height: height * 0.4, // Reduced height
+    height: height, // Full screen height
     width: '100%',
     marginTop: -STATUS_BAR_HEIGHT,
   },
+  heroOrangeOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(255, 124, 76, 0.6)', // #C3552C with 40% opacity
+    zIndex: 1,
+  },
   heroContent: {
     flex: 1,
-    backgroundColor: 'rgba(200, 75, 49, 0.4)',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)', // Darker overlay for better text visibility
     padding: 20,
     paddingTop: STATUS_BAR_HEIGHT + 20,
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 2,
   },
   scrollIndicator: {
     position: 'absolute',
-    bottom: 20,
-    left: 0,
-    right: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
+    bottom: 40,
+    alignSelf: 'center',
   },
   heroTitle: {
-    fontSize: 32,
+    fontSize: 40,
     color: '#fff',
     textAlign: 'center',
     marginBottom: 20,
     fontFamily: typography.fonts.bold,
+    width: '80%',
   },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#fff',
     borderRadius: 8,
-    width: '100%',
+    width: '90%',
     maxWidth: 400,
     overflow: 'hidden',
+    marginTop: 20,
   },
   searchInput: {
     flex: 1,
@@ -60,10 +65,7 @@ export const styles = StyleSheet.create({
     fontFamily: typography.fonts.regular,
   },
   searchButton: {
-    backgroundColor: '#C84B31',
     padding: 12,
-    borderTopRightRadius: 8,
-    borderBottomRightRadius: 8,
   },
   section: {
     padding: 20,

@@ -31,7 +31,6 @@ const LoginScreen = () => {
       Alert.alert('Error', 'Please fill in all fields');
       return;
     }
-
     setIsLoading(true);
     try {
       const response = await auth.login(email, password);
@@ -41,21 +40,7 @@ const LoginScreen = () => {
         Alert.alert('Error', 'Invalid login credentials');
       }
     } catch (error: any) {
-      
-      
-      let errorMessage = 'Login failed. Please try again.';
-      
-      if (error.response?.data?.error) {
-        errorMessage = error.response.data.error;
-      } else if (error.response?.status === 400) {
-        errorMessage = 'Invalid email or password. Please check your credentials.';
-      } else if (error.response?.status === 500) {
-        errorMessage = 'Server error. Please try again later.';
-      } else if (error.message === 'Network Error') {
-        errorMessage = 'Network error. Please check your connection.';
-      }
-      
-      Alert.alert('Login Failed', errorMessage);
+      Alert.alert('Login Failed', 'Login failed. Please try again.');
     } finally {
       setIsLoading(false);
     }

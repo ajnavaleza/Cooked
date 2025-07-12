@@ -67,17 +67,13 @@ const EditProfileScreen = () => {
       Alert.alert('Error', 'Please enter your name');
       return;
     }
-
     try {
       setLoading(true);
-      await auth.updateProfile(name.trim(), birthday);
+      await auth.updateProfile(name.trim(), birthday, { name: name.trim(), birthday });
       onSave({ name: name.trim(), birthday });
       navigation.goBack();
     } catch (error: any) {
-      Alert.alert(
-        'Error',
-        error.response?.data?.error || 'Failed to update profile. Please try again.'
-      );
+      Alert.alert('Error', 'Failed to update profile. Please try again.');
     } finally {
       setLoading(false);
     }

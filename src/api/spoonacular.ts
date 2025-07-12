@@ -41,14 +41,6 @@ const spoonacularAPI = axios.create({
 spoonacularAPI.interceptors.response.use(
   response => response,
   error => {
-    if (API_CONFIG.FEATURES.DEBUG) {
-      console.error('Spoonacular API Error:', {
-        url: error.config?.url,
-        params: error.config?.params,
-        status: error.response?.status,
-        data: error.response?.data
-      });
-    }
     throw error;
   }
 );

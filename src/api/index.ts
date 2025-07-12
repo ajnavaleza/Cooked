@@ -20,14 +20,6 @@ API.interceptors.request.use(async (config) => {
 API.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (API_CONFIG.FEATURES.DEBUG) {
-      console.error('API Error:', {
-        url: error.config?.url,
-        method: error.config?.method,
-        status: error.response?.status,
-        data: error.response?.data,
-      });
-    }
     throw error;
   }
 );

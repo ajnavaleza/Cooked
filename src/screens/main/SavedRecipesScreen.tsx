@@ -32,8 +32,6 @@ const SavedRecipesScreen = ({ navigation }: any) => {
       setIsLoading(true);
       setError(null);
       const savedRecipes = await recipeService.getSavedRecipes();
-      
-      // Fetch detailed information for each saved recipe
       const detailedRecipes = await Promise.all(
         savedRecipes.map(async (recipe) => {
           try {
@@ -41,16 +39,13 @@ const SavedRecipesScreen = ({ navigation }: any) => {
               parseInt(recipe.recipeId),
               { includeNutrition: true }
             );
-            
-            // Determine difficulty based on recipe complexity
-            let difficulty: 'Easy' | 'Intermediate' | 'Advanced' = 'Easy';
+            let difficulty = 'Easy';
             if (recipeDetails.extendedIngredients.length > 10 || recipeDetails.readyInMinutes > 45) {
               difficulty = 'Intermediate';
             }
             if (recipeDetails.extendedIngredients.length > 15 || recipeDetails.readyInMinutes > 90) {
               difficulty = 'Advanced';
             }
-
             return {
               id: recipe.recipeId,
               recipeId: recipe.recipeId,
@@ -59,20 +54,15 @@ const SavedRecipesScreen = ({ navigation }: any) => {
               savedAt: new Date(),
             };
           } catch (error) {
-            console.error('Error fetching recipe details:', error);
             return null;
           }
         })
       );
-
-      // Filter out any null results and sort by date
       const validRecipes = detailedRecipes
         .filter((recipe): recipe is SavedRecipe => recipe !== null)
         .sort((a, b) => b.savedAt.getTime() - a.savedAt.getTime());
-
       setRecipes(validRecipes);
     } catch (error) {
-      console.error('Error fetching saved recipes:', error);
       setError('Failed to load saved recipes');
     } finally {
       setIsLoading(false);

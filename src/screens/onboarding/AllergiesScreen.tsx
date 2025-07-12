@@ -40,18 +40,11 @@ const AllergiesScreen = () => {
   const handleSubmit = async () => {
     try {
       setIsLoading(true);
-      setAnswers(prev => {
-        const updated = { ...prev, allergies: selected, allergyOther: other };
-        return updated;
-      });
-      
+      setAnswers(prev => ({ ...prev, allergies: selected, allergyOther: other }));
       await submitOnboardingProfile({ ...answers, allergies: selected, allergyOther: other });
       navigation.navigate('Completion');
     } catch (error: any) {
-      Alert.alert(
-        'Error',
-        'Failed to save your preferences. Please try again.'
-      );
+      Alert.alert('Error', 'Failed to save your preferences. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -63,10 +56,7 @@ const AllergiesScreen = () => {
       await submitOnboardingProfile({ ...answers, allergies: ['None'], allergyOther: '' });
       navigation.navigate('Completion');
     } catch (error: any) {
-      Alert.alert(
-        'Error',
-        'Failed to save your preferences. Please try again.'
-      );
+      Alert.alert('Error', 'Failed to save your preferences. Please try again.');
     } finally {
       setIsLoading(false);
     }

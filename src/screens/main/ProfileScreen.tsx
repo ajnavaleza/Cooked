@@ -47,8 +47,6 @@ const ProfileScreen = () => {
         setLoading(false);
         return;
       }
-
-      // TODO: Add error handling for failed API calls
       const userData = await auth.getUser();
       setUser(userData);
     } catch (error) {
@@ -201,7 +199,6 @@ const ProfileScreen = () => {
             style={[styles.tab, activeTab === 'created' && styles.activeTab]}
             onPress={() => setActiveTab('created')}
           >
-            {/* TODO: Implement created recipes list with backend integration */}
             <Text style={[styles.tabText, activeTab === 'created' && styles.activeTabText]}>
               Created
             </Text>
@@ -210,7 +207,6 @@ const ProfileScreen = () => {
             style={[styles.tab, activeTab === 'saved' && styles.activeTab]}
             onPress={() => setActiveTab('saved')}
           >
-            {/* TODO: Implement saved recipes list with backend integration */}
             <Text style={[styles.tabText, activeTab === 'saved' && styles.activeTabText]}>
               Saved
             </Text>

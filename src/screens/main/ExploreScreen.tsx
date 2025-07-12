@@ -62,24 +62,20 @@ const ExploreScreen = () => {
       } else {
         setLoadingMore(true);
       }
-
       const response = await youtubeAPI.fetchVideos(refresh);
-      
       const newVideos = response.videos.map(video => ({
         ...video,
         isBookmarked: false,
       }));
-
       if (refresh) {
         setVideos(newVideos);
         setCurrentIndex(0);
       } else {
         setVideos(prev => [...prev, ...newVideos]);
       }
-
       setHasMore(response.hasMore);
     } catch (error) {
-      console.error('Error loading videos:', error);
+      setVideos([]);
     } finally {
       setLoading(false);
       setLoadingMore(false);

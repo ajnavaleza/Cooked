@@ -320,16 +320,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
     try {
       setIsSearching(true);
-      const params = getSearchParams();
       const response = await spoonacularApi.searchRecipes({
-        ...params,
         query: searchQuery,
         number: 10,
         addRecipeInformation: true
       });
       setRecipes(response.results);
     } catch (error) {
-      console.error('Error searching recipes:', error);
       Alert.alert('Error', 'Failed to search recipes. Please try again later.');
     } finally {
       setIsSearching(false);
@@ -342,108 +339,80 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <StatusBar 
-        translucent 
-        backgroundColor="transparent" 
-        barStyle="light-content"
-      />
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        {/* Hero Section with Background */}
+      <StatusBar barStyle="light-content" />
+      <ScrollView style={styles.scrollView} bounces={false}>
         <ImageBackground
           source={require('../../assets/main-page/main-page-bg.jpg')}
           style={styles.hero}
-          resizeMode="cover"
         >
+          {/* Orange overlay */}
+          <View style={styles.heroOrangeOverlay} />
           <View style={styles.heroContent}>
-            <Text style={styles.heroTitle}>Simple recipes{'\n'}for students</Text>
+            <Text style={styles.heroTitle}>Simple recipes for students</Text>
             <View style={styles.searchContainer}>
               <TextInput
                 style={styles.searchInput}
-                placeholder="Search recipes or ingredients..."
+                placeholder="Explore recipes..."
                 value={searchQuery}
                 onChangeText={setSearchQuery}
                 onSubmitEditing={handleSearch}
                 returnKeyType="search"
                 placeholderTextColor="#999"
-                editable={!error}
               />
-              <TouchableOpacity 
-                onPress={handleSearch} 
-                style={[styles.searchButton, error && styles.searchButtonDisabled]}
-                disabled={!!error}
+              <TouchableOpacity
+                style={styles.searchButton}
+                onPress={handleSearch}
+                disabled={isSearching || !searchQuery.trim()}
               >
-                {isSearching ? (
-                  <ActivityIndicator color="#fff" size="small" />
-                ) : (
-                  <Ionicons name="search" size={20} color="#fff" />
-                )}
+                <Ionicons
+                  name="search"
+                  size={24}
+                  color={isSearching || !searchQuery.trim() ? '#999' : '#333'}
+                />
               </TouchableOpacity>
+            </View>
+            <View style={styles.scrollIndicator}>
+              <MaterialIcons name="keyboard-arrow-down" size={32} color="#FFF" />
             </View>
           </View>
         </ImageBackground>
 
-        {error ? (
-          <View style={styles.section}>
+        {/* Rest of the content */}
+        <View style={styles.section}>
+          {isLoadingInitial ? (
+            <ActivityIndicator size="large" color="#C84B31" style={styles.loader} />
+          ) : error ? (
             <View style={styles.errorContainer}>
               <MaterialIcons name="error-outline" size={48} color="#FF6B6B" />
               <Text style={styles.errorText}>{error}</Text>
             </View>
-          </View>
-        ) : (
-          <>
-            {/* Recipe of the Day */}
-            <View style={styles.section}>
-              {isLoading ? (
-                <ActivityIndicator size="large" color="#FF6B6B" style={styles.loader} />
-              ) : recipeOfTheDay && (
+          ) : (
+            <>
+              {recipeOfTheDay && (
                 <RecipeCard
                   title={recipeOfTheDay.title}
                   image={recipeOfTheDay.image}
-                  servingSize={recipeOfTheDay.servings}
-                  minutes={recipeOfTheDay.readyInMinutes}
-                  difficulty={recipeOfTheDay.healthScore >= 80 ? 'Easy' : 'Advanced'}
+                  servingSize={`${recipeOfTheDay.servings} servings`}
+                  minutes={`${recipeOfTheDay.readyInMinutes} mins`}
+                  difficulty="Medium"
                   onPress={() => handleRecipePress(recipeOfTheDay)}
                   isRecipeOfDay
                 />
               )}
-            </View>
-
-            {/* Search Results or Explore Recipes */}
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>
-                {searchQuery ? 'Search Results' : 'Simple Recipes for Students'}
-              </Text>
-              {searchQuery && (
-                <Text style={styles.sectionSubtitle}>
-                  {recipes.length} results for "{searchQuery}"
-                </Text>
-              )}
-              
-              {isLoadingInitial ? (
-                <ActivityIndicator size="large" color="#FF6B6B" style={styles.loader} />
-              ) : (
-                <>
-                  {recipes.map((recipe) => (
-                    <RecipeCard
-                      key={recipe.id}
-                      title={recipe.title}
-                      image={recipe.image}
-                      servingSize={recipe.servings}
-                      minutes={recipe.readyInMinutes}
-                      difficulty={recipe.healthScore >= 80 ? 'Easy' : 'Medium'}
-                      onPress={() => handleRecipePress(recipe)}
-                    />
-                  ))}
-                  {!searchQuery && (
-                    <TouchableOpacity style={styles.seeAllButton} onPress={() => {}}>
-                      <Text style={styles.seeAllButtonText}>See all recipes</Text>
-                    </TouchableOpacity>
-                  )}
-                </>
-              )}
-            </View>
-          </>
-        )}
+              {recipes.map((recipe, index) => (
+                <RecipeCard
+                  key={recipe.id}
+                  title={recipe.title}
+                  image={recipe.image}
+                  servingSize={`${recipe.servings} servings`}
+                  minutes={`${recipe.readyInMinutes} mins`}
+                  difficulty={index % 2 === 0 ? 'Easy' : 'Medium'}
+                  onPress={() => handleRecipePress(recipe)}
+                />
+              ))}
+            </>
+          )}
+        </View>
       </ScrollView>
     </View>
   );

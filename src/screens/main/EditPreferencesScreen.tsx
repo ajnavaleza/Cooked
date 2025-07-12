@@ -159,15 +159,11 @@ const EditPreferencesScreen = () => {
     try {
       setSaving(true);
       await auth.updatePreferences(preferences);
-      setInitialPreferences(preferences); // Update initial preferences after successful save
+      setInitialPreferences(preferences);
       Alert.alert('Success', 'Preferences saved successfully');
       navigation.goBack();
     } catch (error: any) {
-      console.error('Error saving preferences:', error);
-      Alert.alert(
-        'Error',
-        error.response?.data?.error || error.message || 'Failed to save preferences'
-      );
+      Alert.alert('Error', 'Failed to save preferences');
     } finally {
       setSaving(false);
     }

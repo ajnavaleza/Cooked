@@ -7,8 +7,20 @@ export type MainStackParamList = {
 
 export type ProfileStackParamList = {
   ProfileMain: undefined;
-  EditPreferences: undefined;
-  EditProfile: undefined;
+  EditPreferences: {
+    currentPreferences: {
+      cuisines?: string[];
+      diets?: string[];
+      allergies?: string[];
+      recipeTypes?: string[];
+      allergyOther?: string;
+    };
+    onSave: (updatedPreferences: any) => void;
+  };
+  EditProfile: {
+    currentProfile: { name?: string; birthday?: string };
+    onSave: (profile: { name?: string; birthday?: string }) => void;
+  };
 };
 
 export type TabParamList = {

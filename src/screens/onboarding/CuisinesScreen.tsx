@@ -40,19 +40,11 @@ const CuisinesScreen = () => {
   const handleSubmit = async () => {
     try {
       setIsLoading(true);
-      setAnswers(prev => {
-        const updated = { ...prev, cuisines: selected };
-        return updated;
-      });
-      
+      setAnswers(prev => ({ ...prev, cuisines: selected }));
       await submitOnboardingProfile({ ...answers, cuisines: selected });
       navigation.navigate('Diets');
     } catch (error: any) {
-      console.error('Submit error:', error);
-      Alert.alert(
-        'Error',
-        error.message || 'Failed to save your preferences. Please try again.'
-      );
+      Alert.alert('Error', 'Failed to save your preferences. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -61,19 +53,11 @@ const CuisinesScreen = () => {
   const handleSkip = async () => {
     try {
       setIsLoading(true);
-      setAnswers(prev => {
-        const updated = { ...prev, cuisines: ['Any'] };
-        return updated;
-      });
-      
+      setAnswers(prev => ({ ...prev, cuisines: ['Any'] }));
       await submitOnboardingProfile({ ...answers, cuisines: ['Any'] });
       navigation.navigate('Diets');
     } catch (error: any) {
-      console.error('Skip error:', error);
-      Alert.alert(
-        'Error',
-        error.message || 'Failed to save your preferences. Please try again.'
-      );
+      Alert.alert('Error', 'Failed to save your preferences. Please try again.');
     } finally {
       setIsLoading(false);
     }
